@@ -2,13 +2,15 @@ package com.bootcamp.demo.model.util;
 
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 public class Location {
     private Double latitude;
     private Double longitude;
 
     public Location(Double latitude, Double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latitude = requireNonNull(latitude);
+        this.longitude = requireNonNull(longitude);
     }
 
     public Double getLatitude() {

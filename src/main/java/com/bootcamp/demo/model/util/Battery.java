@@ -3,13 +3,15 @@ package com.bootcamp.demo.model.util;
 
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 public class Battery {
     private Double level;
     private BatteryStatus status;
 
     public Battery(Double level, BatteryStatus status) {
-        this.level = level;
-        this.status = status;
+        this.level = requireNonNull(level);
+        this.status = requireNonNull(status);
     }
 
     public Double getLevel() {

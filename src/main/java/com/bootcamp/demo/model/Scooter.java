@@ -6,6 +6,8 @@ import com.bootcamp.demo.model.util.ScooterStatus;
 
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 public class Scooter {
     private String id;
     private Location currentLocation;
@@ -14,9 +16,9 @@ public class Scooter {
 
     public Scooter(String id, Location currentLocation, Battery battery, ScooterStatus status) {
         this.id = id;
-        this.currentLocation = currentLocation;
-        this.battery = battery;
-        this.status = status;
+        this.currentLocation = requireNonNull(currentLocation);
+        this.battery = requireNonNull(battery);
+        this.status = requireNonNull(status);
     }
 
     public String getId() {
