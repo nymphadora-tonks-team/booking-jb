@@ -1,13 +1,51 @@
 package com.bootcamp.demo.model.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.Objects;
+
 public class Battery {
     private Double level;
     private BatteryStatus status;
+
+    public Battery(Double level, BatteryStatus status) {
+        this.level = level;
+        this.status = status;
+    }
+
+    public Double getLevel() {
+        return level;
+    }
+
+    public void setLevel(Double level) {
+        this.level = level;
+    }
+
+    public BatteryStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BatteryStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Battery)) return false;
+        Battery battery = (Battery) o;
+        return level.equals(battery.level) && status == battery.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(level, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Battery{" +
+                "level=" + level +
+                ", status=" + status +
+                '}';
+    }
 }
