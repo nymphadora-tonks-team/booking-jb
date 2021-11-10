@@ -4,11 +4,12 @@ import com.bootcamp.demo.model.util.Location;
 import com.bootcamp.demo.model.util.Battery;
 import com.bootcamp.demo.model.util.ScooterStatus;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public class Scooter {
+public class Scooter implements Serializable {
     private Location currentLocation;
     private Battery battery;
     private ScooterStatus status;
