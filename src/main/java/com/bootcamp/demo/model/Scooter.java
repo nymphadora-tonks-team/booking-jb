@@ -9,24 +9,16 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 public class Scooter {
-    private String id;
     private Location currentLocation;
     private Battery battery;
     private ScooterStatus status;
 
+    private Scooter() {}
+
     public Scooter(String id, Location currentLocation, Battery battery, ScooterStatus status) {
-        this.id = id;
         this.currentLocation = requireNonNull(currentLocation);
         this.battery = requireNonNull(battery);
         this.status = requireNonNull(status);
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Location getCurrentLocation() {
@@ -56,8 +48,7 @@ public class Scooter {
     @Override
     public String toString() {
         return "Scooter{" +
-                "id='" + id + '\'' +
-                ", currentLocation=" + currentLocation +
+                "currentLocation=" + currentLocation +
                 ", battery=" + battery +
                 ", status=" + status +
                 '}';
@@ -68,11 +59,11 @@ public class Scooter {
         if (this == o) return true;
         if (!(o instanceof Scooter)) return false;
         Scooter scooter = (Scooter) o;
-        return id.equals(scooter.id) && currentLocation.equals(scooter.currentLocation) && battery.equals(scooter.battery) && status == scooter.status;
+        return currentLocation.equals(scooter.currentLocation) && battery.equals(scooter.battery) && status == scooter.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, currentLocation, battery, status);
+        return Objects.hash(currentLocation, battery, status);
     }
 }
