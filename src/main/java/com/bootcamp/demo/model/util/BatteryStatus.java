@@ -11,7 +11,5 @@ public enum BatteryStatus {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
+    public String getValue() { return value; }
 }
