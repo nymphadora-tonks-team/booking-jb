@@ -54,7 +54,7 @@ public class ScooterServiceImpl implements ScooterService{
 
             // Add a new scooter (asynchronously) in collection "scooters"
             ApiFuture<WriteResult> collectionsApiFuture =
-                    db.collection("bookings").document(scooter.getUuid().toString()).set(scooter);
+                    db.collection("bookings").document(scooter.getSerialNumber()).set(scooter);
 
             String update_time = collectionsApiFuture.get().getUpdateTime().toDate().toString();
 
