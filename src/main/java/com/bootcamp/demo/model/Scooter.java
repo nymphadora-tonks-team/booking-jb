@@ -1,25 +1,25 @@
 package com.bootcamp.demo.model;
 
-import com.bootcamp.demo.model.util.AbstractModel;
 import com.bootcamp.demo.model.util.Location;
 import com.bootcamp.demo.model.util.Battery;
 import com.bootcamp.demo.model.util.ScooterStatus;
 
 import java.util.Objects;
 
-import static java.util.Objects.requireNonNull;
-
-public class Scooter extends AbstractModel {
+public final class Scooter {
+    private String serialNumber;
     private Location currentLocation;
     private Battery battery;
     private ScooterStatus status;
 
     private Scooter() {}
 
-    public Scooter(Location currentLocation, Battery battery, ScooterStatus status) {
-        this.currentLocation = requireNonNull(currentLocation);
-        this.battery = requireNonNull(battery);
-        this.status = requireNonNull(status);
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
     public Location getCurrentLocation() {
@@ -48,24 +48,27 @@ public class Scooter extends AbstractModel {
 
     @Override
     public String toString() {
-        return "Scooter{" +
-                "currentLocation=" + currentLocation +
-                ", battery=" + battery +
-                ", status=" + status +
-                '}';
+        StringBuilder sb = new StringBuilder("Scooter{");
+        sb.append("serialNumber='").append(serialNumber).append(", ");
+        sb.append("currentLocation=").append(currentLocation).append(", ");
+        sb.append("battery=").append(battery).append(", ");
+        sb.append("status=").append(status).append('}');
+        return sb.toString();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Scooter scooter = (Scooter) o;
-        return getCurrentLocation().equals(scooter.getCurrentLocation()) && getBattery().equals(scooter.getBattery()) && getStatus() == scooter.getStatus();
+        final var scooter = (Scooter) o;
+        return this.getSerialNumber().equals(scooter.getSerialNumber())
+                && this.getCurrentLocation().equals(scooter.getCurrentLocation())
+                && this.getBattery().equals(scooter.getBattery())
+                && this.getStatus() == scooter.getStatus();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getCurrentLocation(), getBattery(), getStatus());
+        return Objects.hash(this.getSerialNumber(), this.getCurrentLocation(), this.getBattery(), this.getStatus());
     }
 }

@@ -2,16 +2,11 @@ package com.bootcamp.demo.model.util;
 
 import java.util.Objects;
 
-import static java.util.Objects.requireNonNull;
-
-public class Location {
+public final class Location {
     private Double latitude;
     private Double longitude;
 
-    public Location(Double latitude, Double longitude) {
-        this.latitude = requireNonNull(latitude);
-        this.longitude = requireNonNull(longitude);
-    }
+    public Location() {};
 
     public Double getLatitude() {
         return latitude;
@@ -32,21 +27,22 @@ public class Location {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Location)) return false;
-        Location location = (Location) o;
-        return latitude.equals(location.latitude) && longitude.equals(location.longitude);
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final var location = (Location) o;
+        return this.getLatitude().equals(location.getLatitude())
+                && this.getLongitude().equals(location.getLongitude());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(latitude, longitude);
+        return Objects.hash(this.getLatitude(), this.getLongitude());
     }
 
     @Override
     public String toString() {
-        return "Location{" +
-                "latitude=" + latitude +
-                ", longitude=" + longitude +
-                '}';
+        StringBuilder sb = new StringBuilder("Location{");
+        sb.append("latitude=").append(this.getLatitude());
+        sb.append(", longitude=").append(this.getLongitude()).append('}');
+        return sb.toString();
     }
 }

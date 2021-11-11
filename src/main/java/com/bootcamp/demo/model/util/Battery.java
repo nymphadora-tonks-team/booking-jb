@@ -1,18 +1,12 @@
 package com.bootcamp.demo.model.util;
 
-
 import java.util.Objects;
 
-import static java.util.Objects.requireNonNull;
-
-public class Battery {
+public final class Battery {
     private Double level;
     private BatteryStatus status;
 
-    public Battery(Double level, BatteryStatus status) {
-        this.level = requireNonNull(level);
-        this.status = requireNonNull(status);
-    }
+    public Battery() {}
 
     public Double getLevel() {
         return level;
@@ -33,21 +27,22 @@ public class Battery {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Battery)) return false;
-        Battery battery = (Battery) o;
-        return level.equals(battery.level) && status == battery.status;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        final var battery = (Battery) o;
+        return this.getLevel().equals(battery.getLevel())
+                && this.getStatus() == battery.getStatus();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(level, status);
+        return Objects.hash(this.getLevel(), this.getStatus());
     }
 
     @Override
     public String toString() {
-        return "Battery{" +
-                "level=" + level +
-                ", status=" + status +
-                '}';
+        StringBuilder sb = new StringBuilder("Battery{");
+        sb.append("level=").append(this.getLevel());
+        sb.append(", status=").append(this.getStatus()).append("}");
+        return sb.toString();
     }
 }
