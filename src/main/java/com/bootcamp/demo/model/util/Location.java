@@ -31,8 +31,8 @@ public final class Location {
             return false;
         }
         final var location = (Location) o;
-        return this.getLatitude().equals(location.getLatitude())
-                && this.getLongitude().equals(location.getLongitude());
+        return Objects.equals(this.getLatitude(), location.getLatitude())
+                && Objects.equals(this.getLongitude(), location.getLongitude());
     }
 
     @Override

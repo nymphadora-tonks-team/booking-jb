@@ -31,7 +31,7 @@ public final class Battery {
             return false;
         }
         final var battery = (Battery) o;
-        return this.getLevel().equals(battery.getLevel())
+        return Objects.equals(this.getLevel(), battery.getLevel())
                 && this.getStatus() == battery.getStatus();
     }
 

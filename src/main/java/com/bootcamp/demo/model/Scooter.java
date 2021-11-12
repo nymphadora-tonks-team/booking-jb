@@ -63,9 +63,9 @@ public final class Scooter {
             return false;
         }
         final var scooter = (Scooter) o;
-        return this.getSerialNumber().equals(scooter.getSerialNumber())
-                && this.getCurrentLocation().equals(scooter.getCurrentLocation())
-                && this.getBattery().equals(scooter.getBattery())
+        return Objects.equals(this.getSerialNumber(), scooter.getSerialNumber())
+                && Objects.equals(this.getCurrentLocation(), scooter.getCurrentLocation())
+                && Objects.equals(this.getBattery(), scooter.getBattery())
                 && this.getStatus() == scooter.getStatus();
     }
 
