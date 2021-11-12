@@ -34,17 +34,16 @@ public class ScooterController {
         this.scooterService = scooterService;
     }
 
-    @GetMapping("/{scooterId}")
-    public ResponseEntity<Scooter> getScooterById(@PathVariable(value = "scooterId") String id) {
-        LOGGER.info("GET SCOOTER BY ID - API endpoint invoked");
-        return scooterService.findScooterById(id);
-    }
-
-
     @GetMapping
     public Set<Scooter> getScooters() {
         LOGGER.info("GET SCOOTERS - API endpoint invoked");
         return scooterService.findAllScooters();
+    }
+
+    @GetMapping("/{scooterId}")
+    public Scooter getScooterById(@PathVariable(value = "scooterId") String scooterId) {
+        LOGGER.info("GET SCOOTER BY ID - API endpoint invoked");
+        return scooterService.findScooterById(scooterId);
     }
 
     @PostMapping

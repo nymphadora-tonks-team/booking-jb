@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface ScooterService {
-    ResponseEntity<Scooter> findScooterById(String id);
+    Scooter findScooterById(String scooterId);
     Set<Scooter> findAllScooters();
     void createScooter(Scooter scooter);
 }
