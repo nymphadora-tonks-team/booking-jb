@@ -6,8 +6,6 @@ public final class Location {
     private Double latitude;
     private Double longitude;
 
-    public Location() {};
-
     public Double getLatitude() {
         return latitude;
     }

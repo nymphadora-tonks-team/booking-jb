@@ -6,8 +6,6 @@ public final class Battery {
     private Double level;
     private BatteryStatus status;
 
-    public Battery() {}
-
     public Double getLevel() {
         return level;
     }

@@ -12,8 +12,6 @@ public final class Scooter {
     private Battery battery;
     private ScooterStatus status;
 
-    private Scooter() {}
-
     public String getSerialNumber() {
         return serialNumber;
     }

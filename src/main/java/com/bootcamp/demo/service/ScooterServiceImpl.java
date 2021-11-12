@@ -20,8 +20,7 @@ import java.util.stream.StreamSupport;
 public class ScooterServiceImpl implements ScooterService{
 
     private final Firestore db;
-    private static final String COLLECTION_BOOKINGS = "bookings";
-    private static final String COLLECTION_BOOKINGS_SCOOTERS = "scooters";
+    private static final String COLLECTION_SCOOTERS_PATH = "bookings/databases/scooters";
     private static final ResponseEntity<Object> SUCCESS_RESPONSE = new ResponseEntity<>(HttpStatus.OK);
     private static final ResponseEntity<Object> FAILURE_RESPONSE = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -40,8 +39,8 @@ public class ScooterServiceImpl implements ScooterService{
         LOGGER.info("FIND ALL SCOOTER - service function invoked");
 
         try {
+            ApiFuture<QuerySnapshot> querySnapshotApiFuture  = db.collection(COLLECTION_SCOOTERS_PATH).get();
 
-            ApiFuture<QuerySnapshot> querySnapshotApiFuture  = db.collection(COLLECTION_BOOKINGS).get();
             Iterable<QueryDocumentSnapshot> scootersDocuments = querySnapshotApiFuture.get().getDocuments();
 
             LOGGER.info("Found scooters successfully");
@@ -62,8 +61,9 @@ public class ScooterServiceImpl implements ScooterService{
         LOGGER.info("CREATE SCOOTER - service function invoked");
 
         try {
-            ApiFuture<WriteResult> collectionsApiFuture =
-                    db.collection(COLLECTION_BOOKINGS).document(scooter.getSerialNumber()).set(scooter);
+            ApiFuture<WriteResult> collectionsApiFuture = db.collection(COLLECTION_SCOOTERS_PATH)
+                    .document(scooter.getSerialNumber())
+                    .set(scooter);
 
             String update_time = collectionsApiFuture.get().getUpdateTime().toDate().toString();
 
