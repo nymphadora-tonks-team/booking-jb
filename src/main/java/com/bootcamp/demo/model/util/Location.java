@@ -6,13 +6,11 @@ public final class Location {
     private Double latitude;
     private Double longitude;
 
-    public Location() {};
-
     public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(final Double latitude) {
         this.latitude = latitude;
     }
 
@@ -20,14 +18,18 @@ public final class Location {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(final Double longitude) {
         this.longitude = longitude;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
         final var location = (Location) o;
         return this.getLatitude().equals(location.getLatitude())
                 && this.getLongitude().equals(location.getLongitude());
