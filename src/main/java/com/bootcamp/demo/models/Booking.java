@@ -1,18 +1,20 @@
 package com.bootcamp.demo.models;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 
-public class Booking {
-    private long id;
-    private long serialNumber;
-    private long accountId;
-    private Date startDate;
-    private Date endDate;
+public final class Booking {
+    private UUID id;
+    private UUID serialNumber;
+    private UUID accountId;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private PaymentStatus payment;
 
-    public Booking(){}
-    public Booking(long id,long serialNumber, long accountId,Date startDate,Date endDate,PaymentStatus payment){
+    public Booking() {}
+
+    public Booking(UUID id,UUID serialNumber, UUID accountId,LocalDateTime startDate,LocalDateTime endDate,PaymentStatus payment) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.accountId = accountId;
@@ -21,24 +23,23 @@ public class Booking {
         this.payment = payment;
     }
 
-    //Getters
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public long getSerialNumber() {
+    public UUID getSerialNumber() {
         return serialNumber;
     }
 
-    public long getAccountId() {
+    public UUID getAccountId() {
         return accountId;
     }
 
-    public Date getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDateTime getEndDate() {
         return endDate;
     }
 
@@ -46,25 +47,23 @@ public class Booking {
         return payment;
     }
 
-    //Setters
-
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public void setSerialNumber(long serialNumber) {
+    public void setSerialNumber(UUID serialNumber) {
         this.serialNumber = serialNumber;
     }
 
-    public void setAccountId(long accountId) {
+    public void setAccountId(UUID accountId) {
         this.accountId = accountId;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
@@ -73,15 +72,7 @@ public class Booking {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Booking booking = (Booking) o;
-        return id == booking.id && serialNumber == booking.serialNumber && accountId == booking.accountId && startDate.equals(booking.startDate) && endDate.equals(booking.endDate) && payment == booking.payment;
-    }
-
-    @Override
     public int hashCode() {
-        return Objects.hash(id, serialNumber, accountId, startDate, endDate, payment);
+        return Objects.hash(id, serialNumber, accountId);
     }
 }
