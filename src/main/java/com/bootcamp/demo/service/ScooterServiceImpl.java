@@ -1,6 +1,7 @@
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Scooter;
+import com.bootcamp.demo.model.util.Location;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
@@ -10,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -72,5 +73,33 @@ public class ScooterServiceImpl implements ScooterService{
             LOGGER.error(e.getMessage());
             throw new ServiceException();
         }
+    }
+
+    private boolean approximateLocation(Location userLocation, Location scooterLocation) {
+        if (scooterLocation.getLongitude() <= userLocation.getLongitude() + 0.01
+            && (scooterLocation.getLongitude() > userLocation.getLongitude() - 0.01 )) {
+            if ((userLocation.getLatitude() + 0.01 >= scooterLocation.getLatitude())
+                && (userLocation.getLatitude() - 0.01 < scooterLocation.getLatitude())) {
+                return true;
+            }
+        }
+        System.out.println("The scooter is not nearby");
+        return false;
+    }
+
+    @Override
+    public Set<Scooter> getAvailableScooters(Location userLocation) {
+        LOGGER.info("GET AVAILABLE SCOOTERS - service function invoked");
+        Set<Scooter> allScooters = findAllScooters();
+        Set<Scooter> availableScooters = new HashSet<>();
+        for (Scooter scooter : allScooters) {
+            if(Objects.equals(scooter.getStatus().getValue(), "AVAILABLE")) {
+                if(approximateLocation(userLocation, scooter.getCurrentLocation())){
+                    availableScooters.add(scooter);
+                }
+            }
+        }
+        LOGGER.info("Found scooters successfully");
+        return availableScooters;
     }
 }

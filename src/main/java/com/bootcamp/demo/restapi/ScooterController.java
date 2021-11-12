@@ -1,6 +1,7 @@
 package com.bootcamp.demo.restapi;
 
 import com.bootcamp.demo.model.Scooter;
+import com.bootcamp.demo.model.util.Location;
 import com.bootcamp.demo.service.ScooterService;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
 import com.bootcamp.demo.service.exception.ServiceException;
@@ -52,5 +53,13 @@ public class ScooterController {
     public void postScooter(@RequestBody final Scooter scooter) {
         LOGGER.info("POST SCOOTER - API endpoint invoked");
         scooterService.createScooter(scooter);
+    }
+
+    @GetMapping("/available")
+    public Set<Scooter> getAvailableScooters(){
+        Location userLocation = new Location();
+        userLocation.setLatitude(0.0);
+        userLocation.setLongitude(0.0);
+        return scooterService.getAvailableScooters(userLocation);
     }
 }
