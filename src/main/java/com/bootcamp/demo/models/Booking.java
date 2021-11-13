@@ -10,6 +10,12 @@ public class Booking {
     private Date startDate;
     private Date endDate;
     private PaymentStatus payment;
+    private final double pricePerMin=1.20;
+    private final double startCost=0.60;
+    public double getTotalCost( long minutesSpentOnScooter)
+    {
+        return startCost + (pricePerMin*minutesSpentOnScooter);
+    }
 
     public Booking(){}
     public Booking(long id,long serialNumber, long accountId,Date startDate,Date endDate,PaymentStatus payment){
