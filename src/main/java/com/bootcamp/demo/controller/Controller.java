@@ -30,6 +30,6 @@ public class Controller {
             booking.setPayment(PaymentStatus.SUCCESS);
             scooter.setCurrentLocation(new Location(scooter.getCurrentLocation().getLongitude(),scooter.getCurrentLocation().getLongitude()));
         }
-        return  totalCostComputed;
+        return totalCostComputed;
     }
 }
