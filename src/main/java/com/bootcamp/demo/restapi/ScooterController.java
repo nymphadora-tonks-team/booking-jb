@@ -1,5 +1,6 @@
 package com.bootcamp.demo.restapi;
 
+import com.bootcamp.demo.FirebaseController;
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.service.ScooterService;
 import com.google.firebase.database.annotations.NotNull;
@@ -8,12 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/scooters")
 @Slf4j
 public class ScooterController {
-
+    private static final Logger LOGGER = Logger.getLogger(FirebaseController.class.getName());
     private final ScooterService scooterService;
 
     public ScooterController(ScooterService scooterService) {

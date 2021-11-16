@@ -17,6 +17,12 @@ public class Booking {
         return startCost + (pricePerMin*minutesSpentOnScooter);
     }
 
+    public String toString(long id ) {
+        return "Booking{" +
+                "id=" + id +
+                '}';
+    }
+
     public Booking(){}
     public Booking(long id,long serialNumber, long accountId,Date startDate,Date endDate,PaymentStatus payment){
         this.id = id;
