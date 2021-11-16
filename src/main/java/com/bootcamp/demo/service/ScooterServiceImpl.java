@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 public class ScooterServiceImpl implements ScooterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScooterServiceImpl.class);
-    private final Firestore db;
     private static final String COLLECTION_SCOOTERS_PATH = "bookings/databases/scooters";
+    private final Firestore db;
 
     private ScooterServiceImpl(Firestore db) {
         this.db = db;
