@@ -6,18 +6,19 @@ import com.bootcamp.demo.service.exception.ItemNotFoundException;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import org.slf4j.Logger;
 
 @Service
-@Slf4j
 public class ScooterServiceImpl implements ScooterService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScooterServiceImpl.class);
     private final Firestore db;
     private static final String COLLECTION_SCOOTERS_PATH = "bookings/databases/scooters";
 
