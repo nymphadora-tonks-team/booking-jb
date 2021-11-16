@@ -1,8 +1,8 @@
 package com.bootcamp.demo.model;
 
-import com.bootcamp.demo.model.util.Location;
-import com.bootcamp.demo.model.util.Battery;
-import com.bootcamp.demo.model.util.ScooterStatus;
+import com.bootcamp.demo.model.component.Location;
+import com.bootcamp.demo.model.component.Battery;
+import com.bootcamp.demo.model.component.ScooterStatus;
 
 import java.util.Objects;
 
