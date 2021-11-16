@@ -1,5 +1,6 @@
 package com.bootcamp.demo.model;
 
+import com.bootcamp.demo.model.component.BatteryStatus;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.Battery;
 import com.bootcamp.demo.model.component.ScooterStatus;
