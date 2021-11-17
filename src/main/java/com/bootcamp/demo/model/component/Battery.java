@@ -11,9 +11,7 @@ public final class Battery {
     }
 
     public void setLevel(final Double level) {
-
         this.level = level;
-        this.status.
     }
 
     public BatteryStatus getStatus() {
