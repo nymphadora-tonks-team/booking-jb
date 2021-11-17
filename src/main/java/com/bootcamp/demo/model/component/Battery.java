@@ -11,6 +11,13 @@ public final class Battery {
     }
 
     public void setLevel(final Double level) {
+        if (level >= 0 && level < 30) {
+            this.setStatus(BatteryStatus.LOW);
+        } else if(level < 60) {
+            this.setStatus(BatteryStatus.MEDIUM);
+        } else {
+            this.setStatus(BatteryStatus.HIGH);
+        }
         this.level = level;
     }
 
@@ -18,7 +25,7 @@ public final class Battery {
         return status;
     }
 
-    public void setStatus(final BatteryStatus status) {
+    private void setStatus(final BatteryStatus status) {
         this.status = status;
     }
 
