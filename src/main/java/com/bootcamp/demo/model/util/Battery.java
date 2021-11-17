@@ -10,24 +10,37 @@ public final class Battery {
         return level;
     }
 
-    public void setLevel(Double level) {
+    public void setLevel(final Double level) {
         this.level = level;
+        this.setStatus();
     }
 
     public BatteryStatus getStatus() {
         return status;
     }
 
-    public void setStatus(BatteryStatus status) {
-        this.status = status;
+    private void setStatus() {
+        if (level >= 0 && level < 30) {
+            this.status = BatteryStatus.LOW;
+        } else if (level < 60) {
+            this.status = BatteryStatus.MEDIUM;
+        } else if (level <= 100) {
+            this.status = BatteryStatus.HIGH;
+        } else {
+            this.status = BatteryStatus.UNKNOWN;
+        }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
         final var battery = (Battery) o;
-        return this.getLevel().equals(battery.getLevel())
+        return Objects.equals(this.getLevel(), battery.getLevel())
                 && this.getStatus() == battery.getStatus();
     }
 

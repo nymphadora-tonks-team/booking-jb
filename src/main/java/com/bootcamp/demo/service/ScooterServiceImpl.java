@@ -5,7 +5,11 @@ import com.bootcamp.demo.service.assembler.ScooterAssembler;
 import com.bootcamp.demo.service.exception.ItemNotFoundException;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.WriteResult;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +17,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import org.slf4j.Logger;
 
 @Service
 public class ScooterServiceImpl implements ScooterService {
@@ -36,7 +39,7 @@ public class ScooterServiceImpl implements ScooterService {
                     .get()
                     .get();
 
-            if(!scooter.exists()) {
+            if (!scooter.exists()) {
                 LOGGER.error(String.format("Scooter with id = %s", scooterId));
                 throw new ItemNotFoundException();
             }
