@@ -1,4 +1,6 @@
-package com.bootcamp.demo.models;
+package com.bootcamp.demo.model;
+import com.bootcamp.demo.model.PaymentStatus;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;

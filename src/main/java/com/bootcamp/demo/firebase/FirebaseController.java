@@ -1,4 +1,4 @@
-package com.bootcamp.demo;
+package com.bootcamp.demo.firebase;
 
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.Firestore;
@@ -30,18 +30,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = "/firebase", produces = APPLICATION_JSON_VALUE)
 public class FirebaseController {
-    private Firestore firestoreDB;
+    private final Firestore firestoreDB;
 
-    @PostConstruct
-    private void initFirestore() throws IOException {
-        final var serviceAccount = new ByteArrayInputStream(getProperty("firebaseKey").getBytes(UTF_8));
-
-        final var options = FirebaseOptions.builder()
-                .setCredentials(fromStream(serviceAccount))
-                .build();
-        initializeApp(options);
-
-        firestoreDB = getFirestore();
+    public FirebaseController(Firestore firestoreDB) {
+        this.firestoreDB = firestoreDB;
     }
 
     /**
