@@ -1,5 +1,6 @@
 package com.bootcamp.demo.model;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -9,7 +10,14 @@ public final class User {
     private String firstName;
     private String lastName;
 
-    public User(UUID userId, String email, String firstName, String lastName) {
+    public User(@NotNull String email, @NotNull String firstName, @NotNull String lastName) {
+        this.userId = UUID.randomUUID();
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public User(@NotNull UUID userId, @NotNull String email, @NotNull String firstName, @NotNull String lastName) {
         this.userId = userId;
         this.email = email;
         this.firstName = firstName;
@@ -32,19 +40,19 @@ public final class User {
         return lastName;
     }
 
-    public User setUserId(UUID id) {
+    public User setUserId(@NotNull UUID id) {
         return new User(id, email, firstName, lastName);
     }
 
-    public void setEmail(String email) {
+    public void setEmail(@NotNull String email) {
         this.email = email;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(@NotNull String firstName) {
         this.firstName = firstName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(@NotNull String lastName) {
         this.lastName = lastName;
     }
 
