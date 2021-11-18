@@ -36,6 +36,7 @@ public class ScooterController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public void postScooter(@RequestBody final Scooter scooter) {
         LOGGER.info("POST SCOOTER - API endpoint invoked");
+        scooter.getBattery().setStatus();
         scooterService.createScooter(scooter);
     }
 }

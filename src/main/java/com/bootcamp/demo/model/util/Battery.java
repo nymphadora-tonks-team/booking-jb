@@ -4,7 +4,15 @@ import java.util.Objects;
 
 public final class Battery {
     private Double level;
-    private BatteryStatus status;
+    private BatteryStatus status = BatteryStatus.UNKNOWN;
+
+    public Battery() {
+    }
+
+    public Battery(Double level, BatteryStatus status) {
+        this.level = level;
+        this.setStatus();
+    }
 
     public Double getLevel() {
         return level;
@@ -19,7 +27,7 @@ public final class Battery {
         return status;
     }
 
-    private void setStatus() {
+    public void setStatus() {
         if (level >= 0 && level < 30) {
             this.status = BatteryStatus.LOW;
         } else if (level < 60) {
