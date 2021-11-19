@@ -40,19 +40,19 @@ public final class User {
         return lastName;
     }
 
-    public User setUserId(@NotNull UUID id) {
+    public User setUserId(@NotNull final UUID id) {
         return new User(id, email, firstName, lastName);
     }
 
-    public void setEmail(@NotNull String email) {
+    public void setEmail(@NotNull final String email) {
         this.email = email;
     }
 
-    public void setFirstName(@NotNull String firstName) {
+    public void setFirstName(@NotNull final String firstName) {
         this.firstName = firstName;
     }
 
-    public void setLastName(@NotNull String lastName) {
+    public void setLastName(@NotNull final String lastName) {
         this.lastName = lastName;
     }
 
