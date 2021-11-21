@@ -1,19 +1,21 @@
-package com.bootcamp.demo;
+package com.bootcamp.demo.firebase;
 
 import com.bootcamp.demo.models.Booking;
 import com.bootcamp.demo.service.BookingService;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.Firestore;
-import com.google.firebase.FirebaseOptions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+<<<<<<< HEAD:src/main/java/com/bootcamp/demo/FirebaseController.java
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashSet;
+=======
+>>>>>>> origin/view_available_scooters:src/main/java/com/bootcamp/demo/firebase/FirebaseController.java
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -21,12 +23,15 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
+<<<<<<< HEAD:src/main/java/com/bootcamp/demo/FirebaseController.java
 import static com.google.auth.oauth2.GoogleCredentials.fromStream;
 import static com.google.firebase.FirebaseApp.initializeApp;
 import static com.google.firebase.cloud.FirestoreClient.getFirestore;
 import static java.lang.System.getProperty;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.StreamSupport.stream;
+=======
+>>>>>>> origin/view_available_scooters:src/main/java/com/bootcamp/demo/firebase/FirebaseController.java
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -37,16 +42,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequestMapping(path = "/firebase", produces = APPLICATION_JSON_VALUE)
 public class FirebaseController {
+<<<<<<< HEAD:src/main/java/com/bootcamp/demo/FirebaseController.java
     private Firestore firestoreDB;
     private static final ResponseEntity<Object> SUCCESS_RESPONSE = new ResponseEntity<>(HttpStatus.OK);
     private static final ResponseEntity<Object> FAILURE_RESPONSE = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     private static final Logger LOGGER = Logger.getLogger(FirebaseController.class.getName());
     private final BookingService bookingService = new BookingService();
+=======
+>>>>>>> origin/view_available_scooters:src/main/java/com/bootcamp/demo/firebase/FirebaseController.java
 
-    @PostConstruct
-    private void initFirestore() throws IOException {
-        final var serviceAccount = new ByteArrayInputStream(getProperty("firebaseKey").getBytes(UTF_8));
+    private final Firestore firestoreDB;
 
+<<<<<<< HEAD:src/main/java/com/bootcamp/demo/FirebaseController.java
         final var options = FirebaseOptions.builder()
                 .setCredentials(fromStream(serviceAccount))
                 .build();
@@ -54,6 +61,10 @@ public class FirebaseController {
 
         firestoreDB = getFirestore();
         bookingService.setDb(firestoreDB);
+=======
+    private FirebaseController(Firestore firestoreDB) {
+        this.firestoreDB = firestoreDB;
+>>>>>>> origin/view_available_scooters:src/main/java/com/bootcamp/demo/firebase/FirebaseController.java
     }
 
     /**

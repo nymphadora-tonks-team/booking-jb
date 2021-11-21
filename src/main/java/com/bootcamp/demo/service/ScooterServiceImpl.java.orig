@@ -7,11 +7,13 @@ import com.bootcamp.demo.service.assembler.ScooterAssembler;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
 import lombok.extern.slf4j.Slf4j;
+<<<<<<< HEAD
 import org.slf4j.LoggerFactory;
+=======
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+>>>>>>> origin/view_available_scooters
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -35,20 +37,19 @@ public class ScooterServiceImpl implements ScooterService{
     }
 
     @Override
-    public Scooter findScooterById(String id) {
+    public ResponseEntity<Scooter> findScooterById(String id) {
         LOGGER.info("FIND SCOOTER BY ID - service function invoked");
         return null;
     }
 
     @Override
-    public List<Scooter> findAllScooter() {
+    public Set<Scooter> findAllScooters() {
         LOGGER.info("FIND ALL SCOOTER - service function invoked");
 
         try {
-            Firestore db = FirestoreClient.getFirestore();
+            ApiFuture<QuerySnapshot> querySnapshotApiFuture  = db.collection(COLLECTION_SCOOTERS_PATH).get();
 
-            ApiFuture<QuerySnapshot> future = db.collection("bookings").get();
-            Iterable<QueryDocumentSnapshot> scootersDocuments = future.get().getDocuments();
+            Iterable<QueryDocumentSnapshot> scootersDocuments = querySnapshotApiFuture.get().getDocuments();
 
             LOGGER.info("Found scooters successfully");
 
@@ -57,27 +58,24 @@ public class ScooterServiceImpl implements ScooterService{
                     .map(ScooterAssembler::documentToModel)
                     .collect(Collectors.toSet());
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error(e.getMessage());
             throw new ServiceException();
         }
 
     }
 
     @Override
-    public void createScooter(Scooter scooter) {
+    public void createScooter(final Scooter scooter) {
         LOGGER.info("CREATE SCOOTER - service function invoked");
-        try {
-            Firestore db = FirestoreClient.getFirestore();
 
-            // Add a new scooter (asynchronously) in collection "scooters"
-            ApiFuture<WriteResult> collectionsApiFuture =
-                    db.collection("bookings").document(scooter.getSerialNumber()).set(scooter);
+        try {
+            ApiFuture<WriteResult> collectionsApiFuture = db.collection(COLLECTION_SCOOTERS_PATH)
+                    .document(scooter.getSerialNumber())
+                    .set(scooter);
 
             String update_time = collectionsApiFuture.get().getUpdateTime().toDate().toString();
 
             LOGGER.info("SCOOTER create successfully. Update_time: " + update_time);
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error(e.getMessage());
             throw new ServiceException();
         }
     }

@@ -1,11 +1,14 @@
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Scooter;
+import com.bootcamp.demo.model.util.Location;
+import org.springframework.http.ResponseEntity;
 
-import java.util.List;
+import java.util.Set;
 
 public interface ScooterService {
-    Scooter findScooterById(String id);
-    List<Scooter> findAllScooter();
+    ResponseEntity<Scooter> findScooterById(String id);
+    Set<Scooter> findAllScooters();
     void createScooter(Scooter scooter);
+    Set<Scooter> getAvailableScooters(Location userLocation);
 }

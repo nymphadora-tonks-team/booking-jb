@@ -26,9 +26,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .permitAll();
+<<<<<<< HEAD
     http.csrf().disable();
+=======
         // temporal solution
         http.csrf().disable();
+>>>>>>> origin/view_available_scooters
     }
 
     @Override
