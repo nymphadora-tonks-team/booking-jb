@@ -6,13 +6,11 @@ public final class Battery {
     private Double level;
     private BatteryStatus status;
 
-    public Battery() {}
-
     public Double getLevel() {
         return level;
     }
 
-    public void setLevel(Double level) {
+    public void setLevel(final Double level) {
         this.level = level;
     }
 
@@ -20,16 +18,20 @@ public final class Battery {
         return status;
     }
 
-    public void setStatus(BatteryStatus status) {
+    public void setStatus(final BatteryStatus status) {
         this.status = status;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
         final var battery = (Battery) o;
-        return this.getLevel().equals(battery.getLevel())
+        return Objects.equals(this.getLevel(), battery.getLevel())
                 && this.getStatus() == battery.getStatus();
     }
 

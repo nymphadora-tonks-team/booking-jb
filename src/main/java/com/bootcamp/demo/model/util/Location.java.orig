@@ -6,11 +6,14 @@ public final class Location {
     private Double latitude;
     private Double longitude;
 
+<<<<<<< HEAD
     public Location(Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
+=======
+>>>>>>> origin/maria/bookings-history
     public Double getLatitude() {
         return latitude;
     }

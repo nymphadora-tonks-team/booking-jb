@@ -1,20 +1,10 @@
+<<<<<<< HEAD
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.models.Booking;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
-import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import java.util.logging.Logger;
 
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
@@ -33,7 +23,22 @@ public class BookingService implements  IBookingService{
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 }
+=======
+package com.bootcamp.demo.service;
 
+import com.bootcamp.demo.models.Booking;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
+import com.google.firebase.cloud.FirestoreClient;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
 @Service
 public class BookingService implements IBookingService {
@@ -106,3 +111,4 @@ public class BookingService implements IBookingService {
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 }
+>>>>>>> origin/maria/bookings-history
