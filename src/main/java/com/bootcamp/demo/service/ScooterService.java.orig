@@ -1,14 +1,17 @@
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Scooter;
-import org.springframework.http.ResponseEntity;
+<<<<<<< HEAD
 import com.bootcamp.demo.model.util.Location;
+import org.springframework.http.ResponseEntity;
+=======
+>>>>>>> origin/feature/bernat-add-scooter-#18
 
-import java.util.List;
 import java.util.Set;
 
 public interface ScooterService {
-    ResponseEntity<Scooter> findScooterById(String id);
+    Scooter findScooterById(String scooterId);
+
     Set<Scooter> findAllScooters();
 
     void createScooter(Scooter scooter);

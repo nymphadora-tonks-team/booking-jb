@@ -8,15 +8,22 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 /*
 partea de securitate a applicatiei
  */
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .authorizeRequests()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/actuator/health").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/v3/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -26,9 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .permitAll();
-    http.csrf().disable();
-        // temporal solution
-        http.csrf().disable();
+
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }
 
     @Override

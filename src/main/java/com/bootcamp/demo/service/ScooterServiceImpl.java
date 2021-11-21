@@ -4,14 +4,17 @@ import com.bootcamp.demo.FirebaseController;
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.model.util.Location;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
+import com.bootcamp.demo.service.exception.ItemNotFoundException;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
-import lombok.extern.slf4j.Slf4j;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.WriteResult;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,6 +28,8 @@ import java.util.stream.StreamSupport;
 public class ScooterServiceImpl implements ScooterService{
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ScooterServiceImpl.class.getName());
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScooterServiceImpl.class);
+    private static final String COLLECTION_SCOOTERS_PATH = "bookings/databases/scooters";
     private final Firestore db;
     private static final String COLLECTION_SCOOTERS_PATH = "bookings/databases/scooters";
     private static final ResponseEntity<Object> SUCCESS_RESPONSE = new ResponseEntity<>(HttpStatus.OK);
@@ -35,9 +40,25 @@ public class ScooterServiceImpl implements ScooterService{
     }
 
     @Override
-    public Scooter findScooterById(String id) {
-        LOGGER.info("FIND SCOOTER BY ID - service function invoked");
-        return null;
+    public Scooter findScooterById(String scooterId) {
+        LOGGER.info(String.format("FIND SCOOTER BY ID - service function invoked: scooterId = %s", scooterId));
+
+        try {
+            DocumentSnapshot scooter = db.collection(COLLECTION_SCOOTERS_PATH)
+                    .document(scooterId)
+                    .get()
+                    .get();
+
+            if (!scooter.exists()) {
+                LOGGER.error(String.format("Scooter with id = %s", scooterId));
+                throw new ItemNotFoundException();
+            }
+
+            return scooter.toObject(Scooter.class);
+        } catch (ExecutionException | InterruptedException e) {
+            LOGGER.error(e.getMessage());
+            throw new ServiceException();
+        }
     }
 
     @Override
@@ -45,15 +66,15 @@ public class ScooterServiceImpl implements ScooterService{
         LOGGER.info("FIND ALL SCOOTER - service function invoked");
 
         try {
-            Firestore db = FirestoreClient.getFirestore();
-
-            ApiFuture<QuerySnapshot> future = db.collection("bookings").get();
-            Iterable<QueryDocumentSnapshot> scootersDocuments = future.get().getDocuments();
+            Iterable<QueryDocumentSnapshot> scooters = db.collection(COLLECTION_SCOOTERS_PATH)
+                    .get()
+                    .get()
+                    .getDocuments();
 
             LOGGER.info("Found scooters successfully");
 
             return StreamSupport
-                    .stream(scootersDocuments.spliterator(), false)
+                    .stream(scooters.spliterator(), false)
                     .map(ScooterAssembler::documentToModel)
                     .collect(Collectors.toSet());
         } catch (ExecutionException | InterruptedException e) {
@@ -64,14 +85,13 @@ public class ScooterServiceImpl implements ScooterService{
     }
 
     @Override
-    public void createScooter(Scooter scooter) {
-        LOGGER.info("CREATE SCOOTER - service function invoked");
-        try {
-            Firestore db = FirestoreClient.getFirestore();
+    public void createScooter(final Scooter scooter) {
+        LOGGER.info(String.format("CREATE SCOOTER - service function invoked: scooter info = %s", scooter.toString()));
 
-            // Add a new scooter (asynchronously) in collection "scooters"
-            ApiFuture<WriteResult> collectionsApiFuture =
-                    db.collection("bookings").document(scooter.getSerialNumber()).set(scooter);
+        try {
+            ApiFuture<WriteResult> collectionsApiFuture = db.collection(COLLECTION_SCOOTERS_PATH)
+                    .document(scooter.getSerialNumber())
+                    .set(scooter);
 
             String update_time = collectionsApiFuture.get().getUpdateTime().toDate().toString();
 
