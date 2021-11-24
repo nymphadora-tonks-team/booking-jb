@@ -1,10 +1,15 @@
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Booking;
+import com.bootcamp.demo.model.PaymentStatus;
+import com.bootcamp.demo.model.Scooter;
+import com.bootcamp.demo.model.component.Location;
+import com.bootcamp.demo.model.component.ScooterStatus;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.UUID;
@@ -95,4 +100,16 @@ public class BookingService implements IBookingService {
                 .delete();
         return collectionApiFuture.get().getUpdateTime().toString();
     }
+
+    @Override
+    public String updateBooking(UUID bookingId, LocalDateTime endDate, PaymentStatus newStatus) throws ExecutionException, InterruptedException {
+        if (bookingId == null) throw new IllegalArgumentException();
+        DocumentReference docRef = db.collection(COLLECTION_PATH)
+                .document(bookingId.toString());
+        ApiFuture<WriteResult> collectionApiFuture = docRef
+                .update("endDate", endDate,
+                "payment", newStatus);
+        return collectionApiFuture.get().getUpdateTime().toString();
+    }
+
 }
