@@ -1,12 +1,13 @@
 package com.bootcamp.demo.model;
-import com.bootcamp.demo.model.PaymentStatus;
 
+import nonapi.io.github.classgraph.json.Id;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
 
 public final class Booking {
+    @Id
     private UUID id;
     private UUID serialNumber;
     private UUID accountId;
@@ -71,6 +72,13 @@ public final class Booking {
 
     public void setPayment(PaymentStatus payment) {
         this.payment = payment;
+    }
+
+    public double getTotalCost( long minutesSpentOnScooter)
+    {
+        double startCost = 0.60;
+        double pricePerMin = 1.20;
+        return startCost + (pricePerMin * minutesSpentOnScooter);
     }
 
     @Override
