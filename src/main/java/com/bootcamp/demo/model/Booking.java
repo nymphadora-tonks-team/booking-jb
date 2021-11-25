@@ -7,7 +7,6 @@ import java.util.UUID;
 
 
 public final class Booking {
-    @Id
     private UUID id;
     private UUID serialNumber;
     private UUID accountId;

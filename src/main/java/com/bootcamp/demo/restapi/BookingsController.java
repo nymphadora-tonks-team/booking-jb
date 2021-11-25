@@ -2,28 +2,16 @@ package com.bootcamp.demo.restapi;
 
 import com.bootcamp.demo.model.Booking;
 import com.bootcamp.demo.model.PaymentStatus;
-import com.bootcamp.demo.model.Scooter;
-import com.bootcamp.demo.model.component.Location;
-import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.service.BookingService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
-
-
-/**
- * Sample RestController
- * Demo - Used for testing purposes
- */
 
 @RestController
 @RequestMapping(path = "/api/bookings")
@@ -115,20 +103,5 @@ public class BookingsController {
         }
     }
 
-    public double endOfBooking(Booking booking, Scooter scooter) throws ExecutionException, InterruptedException {
-        long bookingDuration=0;
-        double totalCostComputed=0.0;
-        if(booking.getEndDate().isAfter(booking.getEndDate())) {
-            bookingDuration = (booking.getEndDate().getMinute() - booking.getStartDate().getMinute());
 
-        }
-        totalCostComputed=booking.getTotalCost(bookingDuration);
-        if(totalCostComputed>0) {
-            scooter.setStatus(ScooterStatus.AVAILABLE);
-            booking.setPayment(PaymentStatus.SUCCESS);
-            bookingService.updateBooking(booking.getId(), booking.getEndDate(), booking.getPayment());
-            scooter.setCurrentLocation(new Location(scooter.getCurrentLocation().getLongitude(),scooter.getCurrentLocation().getLongitude()));
-        }
-        return totalCostComputed;
-    }
 }

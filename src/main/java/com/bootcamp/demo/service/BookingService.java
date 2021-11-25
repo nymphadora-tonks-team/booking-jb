@@ -2,9 +2,6 @@ package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Booking;
 import com.bootcamp.demo.model.PaymentStatus;
-import com.bootcamp.demo.model.Scooter;
-import com.bootcamp.demo.model.component.Location;
-import com.bootcamp.demo.model.component.ScooterStatus;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import org.springframework.stereotype.Service;
