@@ -2,7 +2,6 @@ package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
-import com.bootcamp.demo.service.exception.ItemNotFoundException;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -40,12 +39,12 @@ public class ScooterServiceImpl implements ScooterService {
                     .get();
 
             if (!scooter.exists()) {
-                LOGGER.error(String.format("Scooter with id = %s", scooterId));
-                throw new ItemNotFoundException();
+                LOGGER.error(String.format("Scooter with id = %s does not exists!", scooterId));
+                throw new IllegalArgumentException();
             }
 
             return scooter.toObject(Scooter.class);
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             LOGGER.error(e.getMessage());
             throw new ServiceException();
         }
