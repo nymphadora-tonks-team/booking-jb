@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @RestController
@@ -41,9 +40,9 @@ public class ScooterController {
     public ResponseEntity<Object> getScooterById(@PathVariable(value = "scooterId") String scooterId) {
         LOGGER.info("GET SCOOTER BY ID - API endpoint invoked");
 
-        try{
+        try {
             Scooter scooter = scooterService.findScooterById(scooterId);
-            return  new ResponseEntity<>(scooter, HttpStatus.OK);
+            return new ResponseEntity<>(scooter, HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
