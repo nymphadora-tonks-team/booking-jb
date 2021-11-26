@@ -1,14 +1,13 @@
-package com.bootcamp.demo.models;
+package com.bootcamp.demo.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 
 public final class Booking {
-    private UUID id;
-    private UUID serialNumber;
-    private UUID accountId;
+    private String id;
+    private String serialNumber;
+    private long accountId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private PaymentStatus payment;
@@ -16,7 +15,7 @@ public final class Booking {
     public Booking() {
     }
 
-    public Booking(UUID id, UUID serialNumber, UUID accountId, LocalDateTime startDate, LocalDateTime endDate, PaymentStatus payment) {
+    public Booking(String id, String serialNumber, long accountId, LocalDateTime startDate, LocalDateTime endDate, PaymentStatus payment) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.accountId = accountId;
@@ -25,15 +24,15 @@ public final class Booking {
         this.payment = payment;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public UUID getSerialNumber() {
+    public String getSerialNumber() {
         return serialNumber;
     }
 
-    public UUID getAccountId() {
+    public long getAccountId() {
         return accountId;
     }
 
@@ -49,15 +48,15 @@ public final class Booking {
         return payment;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setSerialNumber(UUID serialNumber) {
+    public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
-    public void setAccountId(UUID accountId) {
+    public void setAccountId(long accountId) {
         this.accountId = accountId;
     }
 
@@ -90,13 +89,11 @@ public final class Booking {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Booking: ");
-        sb.append("Id = ").append(id).append(", ");
-        sb.append("Serial Number = ").append(serialNumber).append(", ");
-        sb.append("Account id = ").append(accountId).append(", ");
-        sb.append("Start date = ").append(startDate).append(", ");
-        sb.append("End date = ").append(endDate).append(", ");
-        sb.append("Payment = ").append(payment).append(", ");
-        return sb.toString();
+        return "Booking: " + "Id = " + id + ", " +
+                "Serial Number = " + serialNumber + ", " +
+                "Account id = " + accountId + ", " +
+                "Start date = " + startDate + ", " +
+                "End date = " + endDate + ", " +
+                "Payment = " + payment + ", ";
     }
 }

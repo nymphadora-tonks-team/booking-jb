@@ -1,4 +1,4 @@
-package com.bootcamp.demo.models;
+package com.bootcamp.demo.model;
 
 public enum PaymentStatus {
     SUCCESS("SUCCESS"),
