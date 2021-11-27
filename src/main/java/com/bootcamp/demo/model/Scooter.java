@@ -1,8 +1,8 @@
 package com.bootcamp.demo.model;
 
-import com.bootcamp.demo.model.util.Battery;
-import com.bootcamp.demo.model.util.Location;
-import com.bootcamp.demo.model.util.ScooterStatus;
+import com.bootcamp.demo.model.component.Battery;
+import com.bootcamp.demo.model.component.Location;
+import com.bootcamp.demo.model.component.ScooterStatus;
 
 import java.util.Objects;
 
@@ -12,7 +12,7 @@ public final class Scooter {
     private Battery battery;
     private ScooterStatus status;
 
-    private Scooter() {
+    public Scooter() {
     }
 
     public Scooter(String serialNumber, Location currentLocation, Double level, ScooterStatus status) {
@@ -33,7 +33,7 @@ public final class Scooter {
         return serialNumber;
     }
 
-    public void setSerialNumber(String serialNumber) {
+    public void setSerialNumber(final String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
@@ -41,7 +41,7 @@ public final class Scooter {
         return currentLocation;
     }
 
-    public void setCurrentLocation(Location currentLocation) {
+    public void setCurrentLocation(final Location currentLocation) {
         this.currentLocation = currentLocation;
     }
 
@@ -49,7 +49,7 @@ public final class Scooter {
         return battery;
     }
 
-    public void setBattery(Battery battery) {
+    public void setBattery(final Battery battery) {
         this.battery = battery;
     }
 
@@ -57,7 +57,7 @@ public final class Scooter {
         return status;
     }
 
-    public void setStatus(ScooterStatus status) {
+    public void setStatus(final ScooterStatus status) {
         this.status = status;
     }
 
@@ -73,12 +73,16 @@ public final class Scooter {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
         final var scooter = (Scooter) o;
-        return this.getSerialNumber().equals(scooter.getSerialNumber())
-                && this.getCurrentLocation().equals(scooter.getCurrentLocation())
-                && this.getBattery().equals(scooter.getBattery())
+        return Objects.equals(this.getSerialNumber(), scooter.getSerialNumber())
+                && Objects.equals(this.getCurrentLocation(), scooter.getCurrentLocation())
+                && Objects.equals(this.getBattery(), scooter.getBattery())
                 && this.getStatus() == scooter.getStatus();
     }
 
