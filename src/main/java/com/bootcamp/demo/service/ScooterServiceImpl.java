@@ -95,7 +95,7 @@ public class ScooterServiceImpl implements ScooterService {
         LOGGER.info("UPDATE SCOOTER - service function invoked:");
         DocumentReference docRef = db.collection(COLLECTION_SCOOTERS_PATH)
                 .document(scooterId);
-        Battery newBattery= new Battery(newBatteryLevel);
+        Scooter newScooter= new Scooter(scooterId, location, newBatteryLevel,newStatus);
         ApiFuture<WriteResult> collectionApiFuture = docRef
                 .update("currentLocation",location,
                         "status",newStatus,

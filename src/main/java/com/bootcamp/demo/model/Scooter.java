@@ -1,7 +1,7 @@
 package com.bootcamp.demo.model;
 
-import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.Battery;
+import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.service.ScooterServiceImpl;
 import org.slf4j.Logger;
@@ -16,8 +16,21 @@ public final class Scooter {
     private ScooterStatus status;
     private static final Logger LOGGER = LoggerFactory.getLogger(Scooter.class);
 
-    public Scooter() {
-        LOGGER.info("Scooter consttructor: with default constructor");
+    private Scooter() {
+    }
+
+    public Scooter(String serialNumber, Location currentLocation, Double level, ScooterStatus status) {
+        this.serialNumber = serialNumber;
+        this.currentLocation = currentLocation;
+        this.battery = new Battery(level);
+        this.status = status;
+    }
+
+    public Scooter(String serialNumber, Location currentLocation, Battery battery, ScooterStatus status) {
+        this.serialNumber = serialNumber;
+        this.currentLocation = currentLocation;
+        this.battery = battery;
+        this.status = status;
     }
 
 //    public Scooter(String serialNumber, Location currentLocation, Double level, ScooterStatus status) {
