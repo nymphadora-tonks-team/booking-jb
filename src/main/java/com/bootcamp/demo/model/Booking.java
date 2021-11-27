@@ -1,5 +1,7 @@
 package com.bootcamp.demo.model;
 
+import com.bootcamp.demo.model.component.PaymentStatus;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
