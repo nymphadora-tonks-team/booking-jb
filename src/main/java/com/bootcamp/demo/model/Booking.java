@@ -1,7 +1,11 @@
 package com.bootcamp.demo.model;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 import nonapi.io.github.classgraph.json.Id;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -15,6 +19,7 @@ public final class Booking {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private PaymentStatus payment;
+
 
     public Booking() {}
 
@@ -74,6 +79,7 @@ public final class Booking {
     public void setPayment(PaymentStatus payment) {
         this.payment = payment;
     }
+
 
     public double getTotalCost( long minutesSpentOnScooter)
     {

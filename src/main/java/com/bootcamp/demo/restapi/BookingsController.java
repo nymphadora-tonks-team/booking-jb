@@ -6,15 +6,14 @@ import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.service.BookingService;
+import com.bootcamp.demo.service.ScooterService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
@@ -32,9 +31,11 @@ public class BookingsController {
     private static final ResponseEntity<Object> FAILURE_RESPONSE = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     private static final Logger LOGGER = Logger.getLogger(BookingsController.class.getName());
     private final BookingService bookingService;
+    private final ScooterService scooterService;
 
-    public BookingsController(BookingService bookingService) {
+    public BookingsController(BookingService bookingService, ScooterService scooterService) {
         this.bookingService = bookingService;
+        this.scooterService = scooterService;
     }
 
     @PostMapping
@@ -104,9 +105,16 @@ public class BookingsController {
 
     @PutMapping("/update")
     public ResponseEntity<Object> updateBooking(@RequestParam final UUID id, @RequestParam("start")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)  LocalDateTime endDate, PaymentStatus status) {
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate, PaymentStatus status) {
         try {
             bookingService.updateBooking(id, endDate, status);
+            // Booking booking =  bookingService.getBookingByID(id);
+            //Scooter scooter=scooterService.findScooterById(booking.getSerialNumber().toString());
+            //
+//            if(status== PaymentStatus.SUCCESS)
+//            {
+//                endOfBooking(booking, scooter);
+//            }
             LOGGER.info("UPDATE BOOKING - API endpoint invoked");
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
@@ -116,18 +124,17 @@ public class BookingsController {
     }
 
     public double endOfBooking(Booking booking, Scooter scooter) throws ExecutionException, InterruptedException {
-        long bookingDuration=0;
-        double totalCostComputed=0.0;
-        if(booking.getEndDate().isAfter(booking.getEndDate())) {
+        long bookingDuration = 0;
+        double totalCostComputed = 0.0;
+        if (booking.getEndDate().isAfter(booking.getStartDate())) {
             bookingDuration = (booking.getEndDate().getMinute() - booking.getStartDate().getMinute());
 
         }
-        totalCostComputed=booking.getTotalCost(bookingDuration);
-        if(totalCostComputed>0) {
-            scooter.setStatus(ScooterStatus.AVAILABLE);
-            booking.setPayment(PaymentStatus.SUCCESS);
-            bookingService.updateBooking(booking.getId(), booking.getEndDate(), booking.getPayment());
-            scooter.setCurrentLocation(new Location(scooter.getCurrentLocation().getLongitude(),scooter.getCurrentLocation().getLongitude()));
+        totalCostComputed = booking.getTotalCost(bookingDuration);
+        if (totalCostComputed > 0) {
+            //  bookingService.updateBooking(booking.getId(), booking.getEndDate(), booking.getPayment());
+            scooter.setCurrentLocation(new Location(scooter.getCurrentLocation().getLongitude(), scooter.getCurrentLocation().getLongitude()));
+            scooterService.updateScooter(scooter.getSerialNumber(), scooter.getCurrentLocation(), ScooterStatus.AVAILABLE, scooter.getBattery().getLevel());
         }
         return totalCostComputed;
     }

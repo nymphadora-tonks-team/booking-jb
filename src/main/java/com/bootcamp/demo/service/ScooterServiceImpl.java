@@ -5,7 +5,6 @@ import com.bootcamp.demo.model.component.Battery;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
-import com.bootcamp.demo.service.exception.ItemNotFoundException;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
@@ -40,12 +39,12 @@ public class ScooterServiceImpl implements ScooterService {
                     .get();
 
             if (!scooter.exists()) {
-                LOGGER.error(String.format("Scooter with id = %s", scooterId));
-                throw new ItemNotFoundException();
+                LOGGER.error(String.format("Scooter with id = %s does not exists!", scooterId));
+                throw new IllegalArgumentException();
             }
 
             return scooter.toObject(Scooter.class);
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             LOGGER.error(e.getMessage());
             throw new ServiceException();
         }
@@ -91,20 +90,15 @@ public class ScooterServiceImpl implements ScooterService {
             throw new ServiceException();
         }
     }
-
     @Override
-    public String updateScooter(final String scooterId, Location location, ScooterStatus newStatus, Battery newBattery) throws ExecutionException, InterruptedException {
-        LOGGER.info("CREATE SCOOTER - service function invoked:");
+    public String updateScooter(final String scooterId, Location location, ScooterStatus newStatus, Double newBatteryLevel) throws ExecutionException, InterruptedException {
+        LOGGER.info("UPDATE SCOOTER - service function invoked:");
         DocumentReference docRef = db.collection(COLLECTION_SCOOTERS_PATH)
                 .document(scooterId);
+        Battery newBattery= new Battery(newBatteryLevel);
+        Scooter newScooter= new Scooter(location,newBattery,newStatus);
         ApiFuture<WriteResult> collectionApiFuture = docRef
-                .update("currentLocation", location,
-                        "status", newStatus,
-                        "battery",newBattery);
+                .set(newScooter);
         return collectionApiFuture.get().getUpdateTime().toString();
     }
-
-
-
-
 }

@@ -17,6 +17,6 @@ public interface ScooterService {
     Set<Scooter> findAllScooters();
 
     void createScooter(Scooter scooter);
-    String updateScooter (final String scooterId, Location location, ScooterStatus newStatus, Battery newBattery) throws ExecutionException, InterruptedException;
+    String updateScooter (final String scooterId, Location location, ScooterStatus newStatus, Double newBatteryLevel) throws ExecutionException, InterruptedException;
 
 }

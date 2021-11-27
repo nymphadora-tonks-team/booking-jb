@@ -10,9 +10,7 @@ import com.google.cloud.firestore.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.logging.Logger;
@@ -109,7 +107,10 @@ public class BookingService implements IBookingService {
         ApiFuture<WriteResult> collectionApiFuture = docRef
                 .update("endDate", endDate,
                 "payment", newStatus);
+
         return collectionApiFuture.get().getUpdateTime().toString();
     }
+
+
 
 }
