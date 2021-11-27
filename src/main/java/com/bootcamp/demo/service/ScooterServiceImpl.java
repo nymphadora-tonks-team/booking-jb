@@ -3,14 +3,16 @@ package com.bootcamp.demo.service;
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.model.util.Location;
 import com.bootcamp.demo.model.util.ScooterStatus;
+import com.bootcamp.demo.restapi.ScooterController;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -18,8 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-@Slf4j
 public class ScooterServiceImpl implements ScooterService{
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScooterController.class);
 
     private final Firestore db;
     private static final String COLLECTION_SCOOTERS_PATH = "bookings/databases/scooters";

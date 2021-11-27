@@ -3,7 +3,8 @@ package com.bootcamp.demo.restapi;
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.model.util.Location;
 import com.bootcamp.demo.service.ScooterService;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,8 @@ import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/api/scooters")
-@Slf4j
 public class ScooterController {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScooterController.class);
     private final ScooterService scooterService;
 
     public ScooterController(ScooterService scooterService) {
@@ -26,7 +26,6 @@ public class ScooterController {
         LOGGER.info("GET SCOOTER BY ID - API endpoint invoked");
         return scooterService.findScooterById(id);
     }
-
 
     @GetMapping
     public Set<Scooter> getScooters() {

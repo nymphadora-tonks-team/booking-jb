@@ -3,7 +3,7 @@ package com.bootcamp.demo.model.util;
 public enum BatteryStatus {
     LOW("LOW"),
     MEDIUM("MEDIUM"),
-    HIG("HIGH");
+    HIGH("HIGH");
 
     private final String value;
 
