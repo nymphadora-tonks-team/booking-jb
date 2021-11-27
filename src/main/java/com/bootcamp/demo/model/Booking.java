@@ -1,23 +1,21 @@
 package com.bootcamp.demo.model;
 
-import nonapi.io.github.classgraph.json.Id;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-
 public final class Booking {
-    private UUID id;
-    private UUID serialNumber;
-    private UUID accountId;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String id;
+    private String serialNumber;
+    private long accountId;
+    private String startDate;
+    private String endDate;
     private PaymentStatus payment;
 
-    public Booking() {}
+    public Booking() {
+    }
 
-    public Booking(UUID id,UUID serialNumber, UUID accountId,LocalDateTime startDate,LocalDateTime endDate,PaymentStatus payment) {
-        this.id = id;
+    public Booking(String serialNumber, long accountId, String startDate, String endDate, PaymentStatus payment) {
+        this.id = UUID.randomUUID().toString().replace("-", "");
         this.serialNumber = serialNumber;
         this.accountId = accountId;
         this.startDate = startDate;
@@ -25,23 +23,23 @@ public final class Booking {
         this.payment = payment;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public UUID getSerialNumber() {
+    public String getSerialNumber() {
         return serialNumber;
     }
 
-    public UUID getAccountId() {
+    public long getAccountId() {
         return accountId;
     }
 
-    public LocalDateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
@@ -49,23 +47,23 @@ public final class Booking {
         return payment;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setSerialNumber(UUID serialNumber) {
+    public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
-    public void setAccountId(UUID accountId) {
+    public void setAccountId(long accountId) {
         this.accountId = accountId;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
@@ -73,15 +71,28 @@ public final class Booking {
         this.payment = payment;
     }
 
-    public double getTotalCost( long minutesSpentOnScooter)
-    {
-        double startCost = 0.60;
-        double pricePerMin = 1.20;
-        return startCost + (pricePerMin * minutesSpentOnScooter);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        return Objects.equals(id, booking.id)
+                && Objects.equals(serialNumber, booking.serialNumber)
+                && Objects.equals(accountId, booking.accountId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, serialNumber, accountId);
+    }
+
+    @Override
+    public String toString() {
+        return "Booking: " + "Id = " + id + ", " +
+                "Serial Number = " + serialNumber + ", " +
+                "Account id = " + accountId + ", " +
+                "Start date = " + startDate + ", " +
+                "End date = " + endDate + ", " +
+                "Payment = " + payment + ", ";
     }
 }
