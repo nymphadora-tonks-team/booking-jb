@@ -96,9 +96,10 @@ public class ScooterServiceImpl implements ScooterService {
         DocumentReference docRef = db.collection(COLLECTION_SCOOTERS_PATH)
                 .document(scooterId);
         Battery newBattery= new Battery(newBatteryLevel);
-        Scooter newScooter= new Scooter(location,newBattery,newStatus);
         ApiFuture<WriteResult> collectionApiFuture = docRef
-                .set(newScooter);
+                .update("currentLocation",location,
+                        "status",newStatus,
+                        "battery", newBattery);
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 }
