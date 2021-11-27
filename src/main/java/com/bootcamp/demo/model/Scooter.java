@@ -12,7 +12,7 @@ public final class Scooter {
     private Battery battery;
     private ScooterStatus status;
 
-    private Scooter() {
+    public Scooter() {
     }
 
     public Scooter(String serialNumber, Location currentLocation, Double level, ScooterStatus status) {
