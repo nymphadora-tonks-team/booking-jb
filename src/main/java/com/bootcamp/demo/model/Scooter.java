@@ -3,9 +3,6 @@ package com.bootcamp.demo.model;
 import com.bootcamp.demo.model.component.Battery;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
-import com.bootcamp.demo.service.ScooterServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -14,7 +11,6 @@ public final class Scooter {
     private Location currentLocation;
     private Battery battery;
     private ScooterStatus status;
-    private static final Logger LOGGER = LoggerFactory.getLogger(Scooter.class);
 
     private Scooter() {
     }
@@ -32,29 +28,6 @@ public final class Scooter {
         this.battery = battery;
         this.status = status;
     }
-
-//    public Scooter(String serialNumber, Location currentLocation, Double level, ScooterStatus status) {
-//        LOGGER.info("Scooter consttructor: with level");
-//        this.serialNumber = serialNumber;
-//        this.currentLocation = currentLocation;
-//        this.battery = new Battery(level);
-//        this.status = status;
-//    }
-//
-//    public Scooter(String serialNumber, Location currentLocation, Battery battery, ScooterStatus status) {
-//        LOGGER.info("Scooter consttructor: with battery");
-//
-//        this.serialNumber = serialNumber;
-//        this.currentLocation = currentLocation;
-//        this.battery = battery;
-//        this.status = status;
-//    }
-//
-//    public Scooter(Location currentLocation, Battery battery, ScooterStatus status) {
-//        this.currentLocation = currentLocation;
-//        this.battery = battery;
-//        this.status = status;
-//    }
 
     public String getSerialNumber() {
         return serialNumber;

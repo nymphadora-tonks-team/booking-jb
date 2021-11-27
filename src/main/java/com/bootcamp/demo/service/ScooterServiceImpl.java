@@ -1,7 +1,6 @@
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Scooter;
-import com.bootcamp.demo.model.component.Battery;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
@@ -90,16 +89,15 @@ public class ScooterServiceImpl implements ScooterService {
             throw new ServiceException();
         }
     }
+
     @Override
     public String updateScooter(final String scooterId, Location location, ScooterStatus newStatus, Double newBatteryLevel) throws ExecutionException, InterruptedException {
         LOGGER.info("UPDATE SCOOTER - service function invoked:");
         DocumentReference docRef = db.collection(COLLECTION_SCOOTERS_PATH)
                 .document(scooterId);
-        Scooter newScooter= new Scooter(scooterId, location, newBatteryLevel,newStatus);
+        Scooter newScooter = new Scooter(scooterId, location, newBatteryLevel, newStatus);
         ApiFuture<WriteResult> collectionApiFuture = docRef
-                .update("currentLocation",location,
-                        "status",newStatus,
-                        "battery", newBattery);
+                .set(newScooter);
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 }
