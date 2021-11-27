@@ -6,7 +6,11 @@ public enum ScooterStatus {
 
     private final String value;
 
-    ScooterStatus(String value) { this.value = value; }
+    ScooterStatus(String value) {
+        this.value = value;
+    }
 
-    public String getValue() { return value;}
+    public String getValue() {
+        return value;
+    }
 }
