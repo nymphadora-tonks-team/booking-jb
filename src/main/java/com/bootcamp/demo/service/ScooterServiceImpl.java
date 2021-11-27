@@ -2,6 +2,7 @@ package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.model.util.Location;
+import com.bootcamp.demo.model.util.ScooterStatus;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
@@ -75,30 +76,28 @@ public class ScooterServiceImpl implements ScooterService{
         }
     }
 
-    private boolean approximateLocation(Location userLocation, Location scooterLocation) {
-        if (scooterLocation.getLongitude() <= userLocation.getLongitude() + 0.01
-            && (scooterLocation.getLongitude() > userLocation.getLongitude() - 0.01 )) {
-            if ((userLocation.getLatitude() + 0.01 >= scooterLocation.getLatitude())
-                && (userLocation.getLatitude() - 0.01 < scooterLocation.getLatitude())) {
+    private boolean isNearby(Location selectedLocation, Location scooterLocation) {
+        if (scooterLocation.getLongitude() <= selectedLocation.getLongitude() + 0.01
+            && (scooterLocation.getLongitude() > selectedLocation.getLongitude() - 0.01 )) {
+            if ((selectedLocation.getLatitude() + 0.01 >= scooterLocation.getLatitude())
+                && (selectedLocation.getLatitude() - 0.01 < scooterLocation.getLatitude())) {
                 return true;
             }
         }
-        System.out.println("The scooter is not nearby");
+        LOGGER.info("The scooter is not nearby");
         return false;
     }
 
     @Override
-    public Set<Scooter> getAvailableScooters(Location userLocation) {
+    public Set<Scooter> getAvailableScooters(Location selectedLocation) {
         LOGGER.info("GET AVAILABLE SCOOTERS - service function invoked");
         Set<Scooter> allScooters = findAllScooters();
-        Set<Scooter> availableScooters = new HashSet<>();
-        for (Scooter scooter : allScooters) {
-            if(Objects.equals(scooter.getStatus().getValue(), "AVAILABLE")) {
-                if(approximateLocation(userLocation, scooter.getCurrentLocation())){
-                    availableScooters.add(scooter);
-                }
-            }
-        }
+
+        Set<Scooter> availableScooters = allScooters.stream()
+                .filter(scooter -> (scooter.getStatus() == ScooterStatus.AVAILABLE) &&
+                        isNearby(selectedLocation, scooter.getCurrentLocation()))
+                .collect(Collectors.toSet());
+
         LOGGER.info("Found scooters successfully");
         return availableScooters;
     }
