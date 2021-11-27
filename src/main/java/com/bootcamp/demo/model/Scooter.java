@@ -12,6 +12,23 @@ public final class Scooter {
     private Battery battery;
     private ScooterStatus status;
 
+    private Scooter() {
+    }
+
+    public Scooter(String serialNumber, Location currentLocation, Double level, ScooterStatus status) {
+        this.serialNumber = serialNumber;
+        this.currentLocation = currentLocation;
+        this.battery = new Battery(level);
+        this.status = status;
+    }
+
+    public Scooter(String serialNumber, Location currentLocation, Battery battery, ScooterStatus status) {
+        this.serialNumber = serialNumber;
+        this.currentLocation = currentLocation;
+        this.battery = battery;
+        this.status = status;
+    }
+
     public String getSerialNumber() {
         return serialNumber;
     }
