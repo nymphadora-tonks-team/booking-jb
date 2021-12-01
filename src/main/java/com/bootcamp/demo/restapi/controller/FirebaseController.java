@@ -1,7 +1,9 @@
-package com.bootcamp.demo.restapi;
+package com.bootcamp.demo.restapi.controller;
 
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.Firestore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(path = "/firebase", produces = APPLICATION_JSON_VALUE)
 public class FirebaseController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseController.class);
     private final Firestore firestoreDB;
 
     private FirebaseController(Firestore firestoreDB) {
@@ -31,6 +34,7 @@ public class FirebaseController {
      */
     @GetMapping("/getAllPaths")
     public Set<String> getAllPaths() {
+        LOGGER.info("GET FIREBASE COLLECTIONS - API endpoint invoked");
         return StreamSupport.stream(firestoreDB.listCollections().spliterator(), false)
                 .map(CollectionReference::getPath)
                 .collect(Collectors.toUnmodifiableSet());
