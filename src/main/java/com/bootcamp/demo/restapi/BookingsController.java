@@ -13,16 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
-
-/**
- * Sample RestController
- * Demo - Used for testing purposes
- */
 
 @RestController
 @RequestMapping(path = "/api/bookings")
@@ -45,35 +41,39 @@ public class BookingsController {
             LOGGER.info("Booking created successfully. Update time: " + bookingService.createBooking(booking));
             return SUCCESS_RESPONSE;
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            LOGGER.info("Unfortunately, booking could not be  created .");
             return FAILURE_RESPONSE;
         }
     }
 
     @GetMapping("/getBookingsByUserId/{userId}")
     @ResponseBody
-    public ResponseEntity<LinkedHashSet<Booking>> getBookingsByUserId(@PathVariable(value = "userId") UUID userId) {
+    public ResponseEntity<LinkedHashSet<Booking>> getBookingsByUserId(@PathVariable(value = "userId") String userId) {
         LinkedHashSet<Booking> bookingsByUserId = new LinkedHashSet<>();
         try {
             bookingsByUserId = bookingService.getBookings(userId);
             LOGGER.info("GET BOOKINGS BY userID - API endpoint invoked");
             return new ResponseEntity<>(bookingsByUserId, HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            LOGGER.info("Unfortunately,an error happened while trying to retrive a booking based on the user id.");
             return new ResponseEntity<>(bookingsByUserId, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/getBooking/{id}")
     @ResponseBody
-    public ResponseEntity<Object> getBooking(@PathVariable(value = "id") final UUID id) {
+    public ResponseEntity<Object> getBooking(@PathVariable(value = "id") final String id) {
         Booking booking = null;
         try {
             booking = bookingService.getBookingByID(id);
             LOGGER.info("GET BOOKING BY ID - API endpoint invoked");
             return new ResponseEntity<>(booking, HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            LOGGER.info("Unfortunately,an error happened while trying to get a booking.");
+
             return new ResponseEntity<>(booking, HttpStatus.BAD_REQUEST);
         }
     }
@@ -86,56 +86,64 @@ public class BookingsController {
             bookings = bookingService.getAllBookings();
             return new ResponseEntity<>(bookings, HttpStatus.OK);
         } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            LOGGER.info("Unfortunately,an error happened while trying to get all the bookings.");
+
             return new ResponseEntity<>(bookings, HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("/delete")
-    public ResponseEntity<Object> deleteBooking(@RequestParam final UUID id) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Object> deleteBooking(@RequestParam final String id) {
         try {
             bookingService.deleteBooking(id);
             LOGGER.info("DELETE BOOKING - API endpoint invoked");
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            LOGGER.info("Unfortunately,an error happened when trying to delete a booking.");
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateBooking(@RequestParam final UUID id, @RequestParam("start")
+    public ResponseEntity<Object> updateBooking(@RequestParam final String id, @RequestParam("start")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate, PaymentStatus status) {
         try {
             bookingService.updateBooking(id, endDate, status);
-            // Booking booking =  bookingService.getBookingByID(id);
-            //Scooter scooter=scooterService.findScooterById(booking.getSerialNumber().toString());
-            //
-//            if(status== PaymentStatus.SUCCESS)
-//            {
-//                endOfBooking(booking, scooter);
-//            }
+            Booking booking = bookingService.getBookingByID(id);
+            Scooter scooter = scooterService.findScooterById(booking.getSerialNumber());
+
+            if (status == PaymentStatus.SUCCESS) {
+                endBookingAndUpdate(booking, scooter);
+            }
             LOGGER.info("UPDATE BOOKING - API endpoint invoked");
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            LOGGER.info("Unfortunately,an error happened when trying to update the booking.");
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    public double endOfBooking(Booking booking, Scooter scooter) throws ExecutionException, InterruptedException {
+    public double endBookingAndUpdate(Booking booking, Scooter scooter) throws ExecutionException, InterruptedException {
         long bookingDuration = 0;
-        double totalCostComputed = 0.0;
-        if (booking.getEndDate().isAfter(booking.getStartDate())) {
-            bookingDuration = (booking.getEndDate().getMinute() - booking.getStartDate().getMinute());
 
+        String startDate = booking.getStartDate();
+        String endDate = booking.getEndDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTimeStart = LocalDateTime.parse(startDate, formatter);
+        LocalDateTime dateTimeEnd = LocalDateTime.parse(endDate, formatter);
+        if (dateTimeEnd.isAfter(dateTimeStart)) {
+            bookingDuration = dateTimeEnd.getMinute() - dateTimeStart.getMinute();
         }
-        totalCostComputed = booking.getTotalCost(bookingDuration);
-        if (totalCostComputed > 0) {
-            //  bookingService.updateBooking(booking.getId(), booking.getEndDate(), booking.getPayment());
-            scooter.setCurrentLocation(new Location(scooter.getCurrentLocation().getLongitude(), scooter.getCurrentLocation().getLongitude()));
-            scooterService.updateScooter(scooter.getSerialNumber(), scooter.getCurrentLocation(), ScooterStatus.AVAILABLE, scooter.getBattery().getLevel());
-        }
+        final double totalCostComputed = booking.getTotalCost(bookingDuration);
+        bookingService.updateBooking(booking.getId(), dateTimeEnd, booking.getPayment());
+        scooter.setCurrentLocation(new Location(scooter.getCurrentLocation().getLongitude(), scooter.getCurrentLocation().getLongitude()));
+        scooterService.updateScooter(scooter.getSerialNumber(), scooter.getCurrentLocation(), ScooterStatus.AVAILABLE, scooter.getBattery().getLevel());
+
         return totalCostComputed;
     }
 

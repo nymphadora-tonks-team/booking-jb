@@ -30,7 +30,7 @@ public class BookingService implements IBookingService {
      * Retrieves a Booking entity by its id.
      */
     @Override
-    public Booking getBookingByID(final UUID bookingId) throws ExecutionException, InterruptedException, IllegalArgumentException {
+    public Booking getBookingByID(final String bookingId) throws ExecutionException, InterruptedException, IllegalArgumentException {
         if (bookingId == null) throw new IllegalArgumentException();
         DocumentReference documentReference = db.collection(COLLECTION_PATH)
                 .document(bookingId.toString());
@@ -48,17 +48,17 @@ public class BookingService implements IBookingService {
      * Retrieves a Booking entity by its user's id.
      */
     @Override
-    public LinkedHashSet<Booking> getBookings(final UUID userId) throws ExecutionException, InterruptedException, IllegalArgumentException {
+    public LinkedHashSet<Booking> getBookings(final String userId) throws ExecutionException, InterruptedException, IllegalArgumentException {
         if (userId == null) throw new IllegalArgumentException();
-        LinkedHashSet<Booking> userBookings;
-        userBookings = db.collection(COLLECTION_PATH)
+//        LinkedHashSet<Booking> userBookings;
+//        userBookings =
+        return db.collection(COLLECTION_PATH)
                 .whereEqualTo("accountId", userId).get().get()
                 .getDocuments()
                 .stream().map(d -> d.toObject(Booking.class))
-                .collect(Collectors.toSet())
-                .stream().sorted(Comparator.comparing(Booking :: getStartDate))
+                .sorted(Comparator.comparing(Booking :: getStartDate))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
-        return userBookings;
+        //return userBookings;
     }
 
     /**
@@ -72,8 +72,7 @@ public class BookingService implements IBookingService {
                 .get()
                 .getDocuments()
                 .stream().map(d -> d.toObject(Booking.class))
-                .collect(Collectors.toSet())
-                .stream().sorted(Comparator.comparing(Booking :: getStartDate))
+                .sorted(Comparator.comparing(Booking :: getStartDate))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         return allBookings;
     }
@@ -85,25 +84,25 @@ public class BookingService implements IBookingService {
     public String createBooking(final Booking booking) throws ExecutionException, InterruptedException, IllegalArgumentException {
         if (booking == null) throw new IllegalArgumentException();
         ApiFuture<WriteResult> collectionApiFuture = db.collection(COLLECTION_PATH)
-                .document(booking.getId().toString())
+                .document(booking.getId())
                 .set(booking);
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 
     @Override
-    public String deleteBooking(final UUID bookingId) throws ExecutionException, InterruptedException {
+    public String deleteBooking(final String bookingId) throws ExecutionException, InterruptedException {
         if (bookingId == null) throw new IllegalArgumentException();
         ApiFuture<WriteResult> collectionApiFuture = db.collection(COLLECTION_PATH)
-                .document(bookingId.toString())
+                .document(bookingId)
                 .delete();
         return collectionApiFuture.get().getUpdateTime().toString();
     }
 
     @Override
-    public String updateBooking(UUID bookingId, LocalDateTime endDate, PaymentStatus newStatus) throws ExecutionException, InterruptedException {
+    public String updateBooking(String bookingId, LocalDateTime endDate, PaymentStatus newStatus) throws ExecutionException, InterruptedException {
         if (bookingId == null) throw new IllegalArgumentException();
         DocumentReference docRef = db.collection(COLLECTION_PATH)
-                .document(bookingId.toString());
+                .document(bookingId);
         ApiFuture<WriteResult> collectionApiFuture = docRef
                 .update("endDate", endDate,
                 "payment", newStatus);

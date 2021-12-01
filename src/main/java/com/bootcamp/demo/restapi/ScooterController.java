@@ -63,7 +63,7 @@ public class ScooterController {
         }
     }
     @PutMapping("/updateScooter")
-    public ResponseEntity<Object> updateScooter (final String scooterId, Location location, ScooterStatus newStatus, Double newBatteryLevel)
+    public ResponseEntity<Object> updateScooter (final String scooterId, final Location location, final ScooterStatus newStatus, final Double newBatteryLevel)
     {
         try {
             scooterService.updateScooter(scooterId, location, newStatus, newBatteryLevel);
@@ -75,5 +75,11 @@ public class ScooterController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+    }
+    @DeleteMapping("/{scooterId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteScooterById(@PathVariable(value = "scooterId") String scooterId){
+        LOGGER.info("DELETE SCOOTER BY ID - API endpoint invoked. scooterId = {}", scooterId);
+        scooterService.deleteScooterById(scooterId);
     }
 }

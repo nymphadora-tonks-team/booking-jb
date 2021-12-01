@@ -4,9 +4,11 @@ import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
+import com.bootcamp.demo.service.exception.ItemNotFoundException;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -99,5 +101,26 @@ public class ScooterServiceImpl implements ScooterService {
         ApiFuture<WriteResult> collectionApiFuture = docRef
                 .set(newScooter);
         return collectionApiFuture.get().getUpdateTime().toString();
+    }
+
+    @Override
+    public void deleteScooterById(String scooterId) {
+        LOGGER.info("DELETE SCOOTER - service function invoked. scooterId = {}", scooterId);
+        try {
+            DocumentSnapshot scooter = db.collection(COLLECTION_SCOOTERS_PATH).document(scooterId).get().get();
+
+            if (!scooter.exists()) {
+                LOGGER.error("DELETE SCOOTER - Scooter does not exist. scooterId = {}", scooterId);
+                throw new ItemNotFoundException(String.format("Scooter does not exist. scooterId = %s", scooterId));
+            }
+
+            ApiFuture<WriteResult> writeResult = db.collection(COLLECTION_SCOOTERS_PATH).document(scooterId).delete();
+
+            LOGGER.info("DELETE SCOOTER - service function. Update time : {} | scooterId = {}", writeResult.get().getUpdateTime(), scooterId);
+        } catch (ExecutionException | InterruptedException e) {
+            LOGGER.error("DELETE SCOOTER - service function. scooterId = {}", scooterId);
+            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            throw new ServiceException(e);
+        }
     }
 }

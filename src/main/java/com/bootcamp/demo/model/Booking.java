@@ -1,29 +1,24 @@
 package com.bootcamp.demo.model;
 
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import nonapi.io.github.classgraph.json.Id;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Objects;
-import java.util.UUID;
 
 
 public final class Booking {
 
-    @Id
-    private UUID id;
-    private UUID serialNumber;
-    private UUID accountId;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String id;
+    private String serialNumber;
+    private long accountId;
+    private String startDate;
+    private String endDate;
     private PaymentStatus payment;
 
 
-    public Booking() {}
+    public Booking() {
+    }
 
-    public Booking(UUID id,UUID serialNumber, UUID accountId,LocalDateTime startDate,LocalDateTime endDate,PaymentStatus payment) {
+    public Booking(String id, String serialNumber, long accountId, String startDate, String endDate, PaymentStatus payment) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.accountId = accountId;
@@ -32,23 +27,23 @@ public final class Booking {
         this.payment = payment;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public UUID getSerialNumber() {
+    public String getSerialNumber() {
         return serialNumber;
     }
 
-    public UUID getAccountId() {
+    public long getAccountId() {
         return accountId;
     }
 
-    public LocalDateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
@@ -56,23 +51,23 @@ public final class Booking {
         return payment;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public void setSerialNumber(UUID serialNumber) {
+    public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
-    public void setAccountId(UUID accountId) {
+    public void setAccountId(long accountId) {
         this.accountId = accountId;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
@@ -81,8 +76,7 @@ public final class Booking {
     }
 
 
-    public double getTotalCost( long minutesSpentOnScooter)
-    {
+    public double getTotalCost(long minutesSpentOnScooter) {
         double startCost = 0.60;
         double pricePerMin = 1.20;
         return startCost + (pricePerMin * minutesSpentOnScooter);
