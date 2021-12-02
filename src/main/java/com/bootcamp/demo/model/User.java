@@ -12,7 +12,7 @@ public final class User {
     public User() {}
 
     public User(String email, String firstName, String lastName) {
-        this.userId = UUID.randomUUID().toString();
+        this.userId = UUID.randomUUID().toString().replace("-", "");
         this.email = Objects.requireNonNull(email);
         this.firstName = Objects.requireNonNull(firstName);
         this.lastName = Objects.requireNonNull(lastName);
