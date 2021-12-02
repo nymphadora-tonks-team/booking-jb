@@ -4,26 +4,28 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class User {
-    private final UUID userId;
+    private String userId;
     private String email;
     private String firstName;
     private String lastName;
 
+    public User() {}
+
     public User(String email, String firstName, String lastName) {
-        this.userId = UUID.randomUUID();
+        this.userId = UUID.randomUUID().toString();
         this.email = Objects.requireNonNull(email);
         this.firstName = Objects.requireNonNull(firstName);
         this.lastName = Objects.requireNonNull(lastName);
     }
 
-    public User(UUID userId, String email, String firstName, String lastName) {
+    public User(String userId, String email, String firstName, String lastName) {
         this.userId = userId;
         this.email = Objects.requireNonNull(email);
         this.firstName = Objects.requireNonNull(firstName);
         this.lastName = Objects.requireNonNull(lastName);
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -39,8 +41,8 @@ public final class User {
         return lastName;
     }
 
-    public User setUserId(final UUID id) {
-        return new User(id, email, firstName, lastName);
+    public void setUserId(final String userId) {
+        this.userId = userId;
     }
 
     public void setEmail(final String email) {
