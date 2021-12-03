@@ -10,5 +10,5 @@ public interface ScooterService {
     ResponseEntity<Scooter> findScooterById(String id);
     Set<Scooter> findAllScooters();
     void createScooter(Scooter scooter);
-    Set<Scooter> getAvailableScooters(Location userLocation);
+    Set<Scooter> getAvailableScooters(Location userLocation, Double searchRadius);
 }
