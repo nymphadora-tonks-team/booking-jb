@@ -1,4 +1,4 @@
-package com.bootcamp.demo.firebase;
+package com.bootcamp.demo.repo;
 
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseOptions;
