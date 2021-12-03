@@ -1,8 +1,8 @@
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Scooter;
-import com.bootcamp.demo.model.util.Location;
-import com.bootcamp.demo.model.util.ScooterStatus;
+import com.bootcamp.demo.model.component.Location;
+import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.restapi.ScooterController;
 import com.bootcamp.demo.service.assembler.ScooterAssembler;
 import com.bootcamp.demo.service.exception.ServiceException;

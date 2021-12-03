@@ -1,7 +1,7 @@
 package com.bootcamp.demo.restapi;
 
 import com.bootcamp.demo.model.Scooter;
-import com.bootcamp.demo.model.util.Location;
+import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.service.ScooterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

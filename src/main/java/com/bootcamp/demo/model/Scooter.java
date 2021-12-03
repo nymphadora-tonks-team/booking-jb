@@ -1,8 +1,8 @@
 package com.bootcamp.demo.model;
 
-import com.bootcamp.demo.model.util.Location;
-import com.bootcamp.demo.model.util.Battery;
-import com.bootcamp.demo.model.util.ScooterStatus;
+import com.bootcamp.demo.model.component.Battery;
+import com.bootcamp.demo.model.component.Location;
+import com.bootcamp.demo.model.component.ScooterStatus;
 
 import java.util.Objects;
 
@@ -11,6 +11,23 @@ public final class Scooter {
     private Location currentLocation;
     private Battery battery;
     private ScooterStatus status;
+
+    public Scooter() {
+    }
+
+    public Scooter(String serialNumber, Location currentLocation, Double level, ScooterStatus status) {
+        this.serialNumber = serialNumber;
+        this.currentLocation = currentLocation;
+        this.battery = new Battery(level);
+        this.status = status;
+    }
+
+    public Scooter(String serialNumber, Location currentLocation, Battery battery, ScooterStatus status) {
+        this.serialNumber = serialNumber;
+        this.currentLocation = currentLocation;
+        this.battery = battery;
+        this.status = status;
+    }
 
     public String getSerialNumber() {
         return serialNumber;
@@ -63,9 +80,9 @@ public final class Scooter {
             return false;
         }
         final var scooter = (Scooter) o;
-        return this.getSerialNumber().equals(scooter.getSerialNumber())
-                && this.getCurrentLocation().equals(scooter.getCurrentLocation())
-                && this.getBattery().equals(scooter.getBattery())
+        return Objects.equals(this.getSerialNumber(), scooter.getSerialNumber())
+                && Objects.equals(this.getCurrentLocation(), scooter.getCurrentLocation())
+                && Objects.equals(this.getBattery(), scooter.getBattery())
                 && this.getStatus() == scooter.getStatus();
     }
 
