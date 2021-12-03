@@ -44,15 +44,12 @@ public class ScooterService {
 
             return scooter.toObject(Scooter.class);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            LOGGER.error("FIND SCOOTER BY ID - service function: scooterId = {}. Error message: {}", scooterId, e.getMessage());
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            LOGGER.error("FIND SCOOTER BY ID - service function: scooterId = {}.\n Error message: {}.\n StackTrace: {}", scooterId, e.getMessage(), ExceptionUtils.getStackTrace(e));
             throw new ServiceException(e);
         }
     }
 
     public Set<Scooter> findAllScooters() {
-        LOGGER.info("FIND ALL SCOOTER - service function invoked");
-
         try {
             Iterable<QueryDocumentSnapshot> scooters = db.collection(COLLECTION_SCOOTERS_PATH)
                     .get()
@@ -64,8 +61,7 @@ public class ScooterService {
                     .map(queryDocumentSnapshot -> queryDocumentSnapshot.toObject(Scooter.class))
                     .collect(Collectors.toSet());
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error("FIND ALL SCOOTER - service function. Error message: {}", e.getMessage());
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            LOGGER.error("FIND ALL SCOOTER - service function. Error message: {}.\n StackTrace: {}", e.getMessage(), ExceptionUtils.getStackTrace(e));
             throw new ServiceException(e);
         }
 
@@ -83,8 +79,7 @@ public class ScooterService {
 
             LOGGER.info("CREATE SCOOTER - created successfully. scooter = {}. Update_time: {}", scooter, update_time);
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error("CREATE SCOOTER - service function: scooter = {}. Error message: {}", scooter, e.getMessage());
-            LOGGER.error(ExceptionUtils.getStackTrace(e));
+            LOGGER.error("CREATE SCOOTER - service function: scooter = {}.\n Error message: {}.\n StackTrace: {}", scooter, e.getMessage(), ExceptionUtils.getStackTrace(e));
             throw new ServiceException(e);
         }
     }
