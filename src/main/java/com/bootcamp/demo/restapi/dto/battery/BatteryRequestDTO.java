@@ -1,10 +1,9 @@
 package com.bootcamp.demo.restapi.dto.battery;
 
-import com.google.common.base.Objects;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class BatteryRequestDTO {
 
@@ -26,14 +25,11 @@ public class BatteryRequestDTO {
         if (this == o) {
             return true;
         }
-
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         final var battery = (BatteryRequestDTO) o;
-
-        return Objects.equal(this.getLevel(), battery.getLevel());
+        return Objects.equals(this.getLevel(), battery.getLevel());
     }
 
     @Override
@@ -46,7 +42,6 @@ public class BatteryRequestDTO {
         StringBuilder sb = new StringBuilder("BatteryRequestDTO{");
         sb.append("level=").append(this.getLevel());
         sb.append("}");
-
         return sb.toString();
     }
 }

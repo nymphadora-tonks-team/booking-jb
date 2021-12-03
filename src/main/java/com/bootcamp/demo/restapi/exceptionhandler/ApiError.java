@@ -33,11 +33,9 @@ public class ApiError {
         if (this == o) {
             return true;
         }
-
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-
         ApiError apiError = (ApiError) o;
         return Objects.equals(this.getMessage(), apiError.getMessage()) && Objects.equals(this.getStatus(), apiError.getStatus());
     }
@@ -49,12 +47,10 @@ public class ApiError {
 
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder("ApiError{");
         sb.append("status=").append(this.getStatus());
         sb.append(", message='").append(this.getMessage());
         sb.append("}");
-
         return sb.toString();
     }
 }

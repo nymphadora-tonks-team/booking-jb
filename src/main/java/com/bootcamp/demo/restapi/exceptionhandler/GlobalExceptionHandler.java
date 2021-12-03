@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -27,10 +26,6 @@ public class GlobalExceptionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    /*
-        Global exception handlers
-     */
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult()
@@ -40,42 +35,42 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
         String errorMessage = String.join(", ", errors);
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    private ResponseEntity<ApiError> handleNoHandlerFoundException(NoHandlerFoundException ex, WebRequest request) {
+    private ResponseEntity<ApiError> handleNoHandlerFoundException(WebRequest request) {
         String errorMessage = "Invalid URI: " + request.getContextPath();
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     private ResponseEntity<ApiError> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
         String errorMessage = ex.getMethod() + " method not supported";
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     private ResponseEntity<ApiError> handleHttpMessageNotReadableException() {
         String errorMessage = "Json couldn't been parsed.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
 
     @ExceptionHandler(TypeMismatchException.class)
     private ResponseEntity<ApiError> handleTypeMismatchException(TypeMismatchException ex) {
         String errorMessage = ex.getValue() + " has invalid type.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     private ResponseEntity<ApiError> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         String errorMessage = ex.getValue() + " has invalid type.";
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
 
     @ExceptionHandler(Exception.class)
@@ -84,32 +79,24 @@ public class GlobalExceptionHandler {
         LOGGER.error(ExceptionUtils.getStackTrace(ex));
         String errorMessage = "Oops. Something went wrong.";
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
-
-    /*
-        Custom exception handlers
-    */
 
     @ExceptionHandler(ItemNotFoundException.class)
     private ResponseEntity<ApiError> handleItemNotFoundException(ItemNotFoundException ex) {
         String errorMessage = ex.getMessage().equals("") ? "Failed to find item" : ex.getMessage();
         HttpStatus status = HttpStatus.NOT_FOUND;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
 
     @ExceptionHandler(ServiceException.class)
-    private ResponseEntity<ApiError> handleServiceException(ServiceException ex) {
+    private ResponseEntity<ApiError> handleServiceException() {
         String errorMessage = "Oops. Something went wrong";
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        return handleExceptionInternally(new ApiError(errorMessage, status.value()), new HttpHeaders(), status);
+        return handleExceptionInternally(new ApiError(errorMessage, status.value()), status);
     }
 
-    /*
-        Function for sending the response body of all Exception types.
-     */
-
-    private ResponseEntity<ApiError> handleExceptionInternally(ApiError body, HttpHeaders headers, HttpStatus status) {
-        return new ResponseEntity<>(body, headers, status);
+    private ResponseEntity<ApiError> handleExceptionInternally(ApiError body, HttpStatus status) {
+        return new ResponseEntity<>(body, status);
     }
 }

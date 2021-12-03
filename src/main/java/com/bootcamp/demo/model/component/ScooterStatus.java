@@ -10,16 +10,6 @@ public enum ScooterStatus {
         this.value = value;
     }
 
-    public static boolean contains(String test) {
-
-        for (ScooterStatus c : ScooterStatus.values()) {
-            if (c.name().equals(test)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public String getValue() {
         return value;
     }

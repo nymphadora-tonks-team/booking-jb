@@ -4,8 +4,6 @@ import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.restapi.assembler.ScooterAssembler;
 import com.bootcamp.demo.restapi.dto.scooter.ScooterRequestDTO;
 import com.bootcamp.demo.service.ScooterService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

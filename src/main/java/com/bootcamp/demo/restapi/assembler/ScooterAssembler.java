@@ -14,7 +14,7 @@ public class ScooterAssembler {
         scooter.setSerialNumber(dto.getSerialNumber());
         scooter.setCurrentLocation(new Location(dto.getCurrentLocation().getLatitude(), dto.getCurrentLocation().getLongitude()));
         scooter.setBattery(new Battery(dto.getBattery().getLevel()));
-        scooter.setStatus(ScooterStatus.valueOf(dto.getStatus()));
+        scooter.setStatus(ScooterStatus.valueOf(dto.getStatus().toUpperCase()));
 
         return scooter;
     }

@@ -8,7 +8,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.WriteResult;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,6 @@ public class ScooterService {
 
     public Scooter findScooterById(String scooterId) {
         LOGGER.info("FIND SCOOTER BY ID - service function invoked. scooterId = {}", scooterId);
-
         try {
             DocumentSnapshot scooter = db.collection(COLLECTION_SCOOTERS_PATH)
                     .document(scooterId)
@@ -45,7 +43,7 @@ public class ScooterService {
 
             return scooter.toObject(Scooter.class);
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error("FIND SCOOTER BY ID - service function: scooterId = {}.\n Error message: {}.\n StackTrace: {}", scooterId, e.getMessage(), ExceptionUtils.getStackTrace(e));
+            LOGGER.error("FIND SCOOTER BY ID - service function: scooterId = {}.\n Error message: {}.", scooterId, e.getMessage(), e);
             throw new ServiceException(e);
         }
     }
@@ -63,7 +61,7 @@ public class ScooterService {
                     .map((queryDocumentSnapshot -> queryDocumentSnapshot.toObject(Scooter.class)))
                     .collect(Collectors.toSet());
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error("FIND ALL SCOOTER - service function. Error message: {}.\n StackTrace: {}", e.getMessage(), ExceptionUtils.getStackTrace(e));
+            LOGGER.error("FIND ALL SCOOTER - service function. Error message: {}", e.getMessage(), e);
             throw new ServiceException(e);
         }
 
@@ -71,7 +69,6 @@ public class ScooterService {
 
     public Scooter createScooter(final Scooter scooter) {
         LOGGER.info("CREATE SCOOTER - service function invoked. Scooter = {}", scooter.toString());
-
         try {
             ApiFuture<WriteResult> collectionsApiFuture = db.collection(COLLECTION_SCOOTERS_PATH)
                     .document(scooter.getSerialNumber())
@@ -81,8 +78,8 @@ public class ScooterService {
 
             return scooter;
 
-        } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            LOGGER.error("CREATE SCOOTER - service function: scooter = {}.\n Error message: {}.\n StackTrace: {}", scooter, e.getMessage(), ExceptionUtils.getStackTrace(e));
+        } catch (ExecutionException | InterruptedException e) {
+            LOGGER.error("CREATE SCOOTER - service function: scooter = {}.\n Error message: {}.", scooter, e.getMessage(), e);
             throw new ServiceException(e);
         }
     }
@@ -101,7 +98,7 @@ public class ScooterService {
 
             LOGGER.info("DELETE SCOOTER - service function. Update time : {} | scooterId = {}", writeResult.get().getUpdateTime(), scooterId);
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error("DELETE SCOOTER - service function. scooterId = {}.\n Error message: {}. \n StackTrace: {}", scooterId, e.getMessage(), ExceptionUtils.getStackTrace(e));
+            LOGGER.error("DELETE SCOOTER - service function. scooterId = {}.\n Error message: {}.", scooterId, e.getMessage(), e);
             throw new ServiceException(e);
         }
     }

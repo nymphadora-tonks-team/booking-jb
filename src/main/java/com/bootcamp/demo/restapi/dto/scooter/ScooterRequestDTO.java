@@ -2,8 +2,6 @@ package com.bootcamp.demo.restapi.dto.scooter;
 
 import com.bootcamp.demo.restapi.dto.battery.BatteryRequestDTO;
 import com.bootcamp.demo.restapi.dto.location.LocationRequestDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -11,8 +9,6 @@ import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 public class ScooterRequestDTO {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScooterRequestDTO.class);
 
     @NotEmpty(message = "serialNumber can't be empty")
     private String serialNumber;
@@ -24,7 +20,7 @@ public class ScooterRequestDTO {
     private BatteryRequestDTO battery;
 
     @NotEmpty(message = "Please provide a status")
-    @Pattern(regexp = "^(AVAILABLE|RESERVED)$", message = "Status valid values: AVAILABLE or RESERVED")
+    @Pattern(regexp = "^(AVAILABLE|RESERVED)$", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Invalid status value: AVAILABLE or RESERVED")
     private String status;
 
     public String getSerialNumber() {
