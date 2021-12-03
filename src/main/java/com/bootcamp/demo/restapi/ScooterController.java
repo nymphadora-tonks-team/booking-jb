@@ -43,7 +43,6 @@ public class ScooterController {
     @PostMapping("/available/{searchRadius}")
     @ResponseStatus(value = HttpStatus.OK)
     public Set<Scooter> getAvailableScooters(@PathVariable(value = "searchRadius") Double searchRadius, @RequestBody final Location selectedLocation) {
-        LOGGER.info("POST SCOOTER - API endpoint invoked");
-        return scooterService.getAvailableScooters(selectedLocation, searchRadius);
+       return scooterService.getAvailableScooters(selectedLocation, searchRadius);
     }
 }
