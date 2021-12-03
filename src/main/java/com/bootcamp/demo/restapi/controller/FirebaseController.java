@@ -34,7 +34,6 @@ public class FirebaseController {
      */
     @GetMapping("/getAllPaths")
     public Set<String> getAllPaths() {
-        LOGGER.info("GET FIREBASE COLLECTIONS - API endpoint invoked");
         return StreamSupport.stream(firestoreDB.listCollections().spliterator(), false)
                 .map(CollectionReference::getPath)
                 .collect(Collectors.toUnmodifiableSet());

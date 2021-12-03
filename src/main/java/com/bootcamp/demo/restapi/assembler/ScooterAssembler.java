@@ -9,7 +9,6 @@ import com.bootcamp.demo.restapi.dto.scooter.ScooterRequestDTO;
 public class ScooterAssembler {
 
     public static Scooter toModel(ScooterRequestDTO dto) {
-        // ScooterRequestDTO is assumed that is already validated
         Scooter scooter = new Scooter();
 
         scooter.setSerialNumber(dto.getSerialNumber());
