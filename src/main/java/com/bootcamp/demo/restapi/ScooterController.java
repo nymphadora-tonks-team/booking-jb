@@ -3,8 +3,6 @@ package com.bootcamp.demo.restapi;
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.service.ScooterService;
 import com.bootcamp.demo.service.exception.ServiceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +13,6 @@ import java.util.Set;
 @RequestMapping(path = "/api/scooters")
 public class ScooterController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScooterController.class);
     private final ScooterService scooterService;
 
     public ScooterController(ScooterService scooterService) {
@@ -25,12 +22,10 @@ public class ScooterController {
     @GetMapping
     @ResponseBody
     public ResponseEntity<Set<Scooter>> getScooters() {
-        Set<Scooter> scooters = null;
         try {
-            scooters = scooterService.findAllScooters();
-            return new ResponseEntity<>(scooters, HttpStatus.OK);
+            return new ResponseEntity<>(scooterService.findAllScooters(), HttpStatus.OK);
         } catch (ServiceException e) {
-            return new ResponseEntity<>(scooters, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
