@@ -33,8 +33,7 @@ public class ScooterController {
     @ResponseBody
     public ResponseEntity<Object> getScooterById(@PathVariable(value = "scooterId") String scooterId) {
         try {
-            Scooter scooter = scooterService.findScooterById(scooterId);
-            return new ResponseEntity<>(scooter, HttpStatus.OK);
+            return new ResponseEntity<>(scooterService.findScooterById(scooterId), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -43,7 +42,6 @@ public class ScooterController {
     @PostMapping
     public ResponseEntity<Object> postScooter(@RequestBody final Scooter scooter) {
         try {
-            scooter.getBattery().setStatus();
             scooterService.createScooter(scooter);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (ServiceException e) {
