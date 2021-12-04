@@ -5,26 +5,28 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class User {
-    private final UUID userId;
+    private String userId;
     private String email;
     private String firstName;
     private String lastName;
 
-    public User(@NotNull String email, @NotNull String firstName, @NotNull String lastName) {
-        this.userId = UUID.randomUUID();
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public User() {}
+
+    public User(String email, String firstName, String lastName) {
+        this.userId = UUID.randomUUID().toString().replace("-", "");
+        this.email = Objects.requireNonNull(email);
+        this.firstName = Objects.requireNonNull(firstName);
+        this.lastName = Objects.requireNonNull(lastName);
     }
 
-    public User(@NotNull UUID userId, @NotNull String email, @NotNull String firstName, @NotNull String lastName) {
+    public User(String userId, String email, String firstName, String lastName) {
         this.userId = userId;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.email = Objects.requireNonNull(email);
+        this.firstName = Objects.requireNonNull(firstName);
+        this.lastName = Objects.requireNonNull(lastName);
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -40,19 +42,19 @@ public final class User {
         return lastName;
     }
 
-    public User setUserId(@NotNull UUID id) {
-        return new User(id, email, firstName, lastName);
+    public void setUserId(final String userId) {
+        this.userId = userId;
     }
 
-    public void setEmail(@NotNull String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
-    public void setFirstName(@NotNull String firstName) {
+    public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
 
-    public void setLastName(@NotNull String lastName) {
+    public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
 
@@ -65,12 +67,12 @@ public final class User {
             return false;
         }
         final User other = (User) obj;
-        return Objects.equals(userId, other.userId);
+        return Objects.equals(userId, other.userId) || Objects.equals(email, other.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(userId, email);
     }
 
     @Override

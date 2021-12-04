@@ -82,4 +82,9 @@ public class ScooterController {
         LOGGER.info("DELETE SCOOTER BY ID - API endpoint invoked. scooterId = {}", scooterId);
         scooterService.deleteScooterById(scooterId);
     }
+    @PostMapping("/available/{searchRadius}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Set<Scooter> getAvailableScooters(@PathVariable(value = "searchRadius") Double searchRadius, @RequestBody final Location selectedLocation) {
+        return scooterService.getAvailableScooters(selectedLocation, searchRadius);
+    }
 }

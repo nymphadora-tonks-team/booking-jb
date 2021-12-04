@@ -2,18 +2,18 @@ package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Booking;
 import com.bootcamp.demo.model.PaymentStatus;
-import com.bootcamp.demo.model.Scooter;
-import com.bootcamp.demo.model.component.Location;
-import com.bootcamp.demo.model.component.ScooterStatus;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingService implements IBookingService {
@@ -33,7 +33,7 @@ public class BookingService implements IBookingService {
     public Booking getBookingByID(final String bookingId) throws ExecutionException, InterruptedException, IllegalArgumentException {
         if (bookingId == null) throw new IllegalArgumentException();
         DocumentReference documentReference = db.collection(COLLECTION_PATH)
-                .document(bookingId.toString());
+                .document(bookingId);
         ApiFuture<DocumentSnapshot> future = documentReference.get();
         DocumentSnapshot document = future.get();
         Booking booking;
@@ -48,17 +48,17 @@ public class BookingService implements IBookingService {
      * Retrieves a Booking entity by its user's id.
      */
     @Override
-    public LinkedHashSet<Booking> getBookings(final String userId) throws ExecutionException, InterruptedException, IllegalArgumentException {
-        if (userId == null) throw new IllegalArgumentException();
-//        LinkedHashSet<Booking> userBookings;
-//        userBookings =
-        return db.collection(COLLECTION_PATH)
-                .whereEqualTo("accountId", userId).get().get()
-                .getDocuments()
-                .stream().map(d -> d.toObject(Booking.class))
-                .sorted(Comparator.comparing(Booking :: getStartDate))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        //return userBookings;
+    public LinkedHashSet<Booking> getBookings(final long userId) throws ExecutionException, InterruptedException, IllegalArgumentException {
+        //if (userId == ) throw new IllegalArgumentException();
+        LinkedHashSet<Booking> userBookings;
+        userBookings =
+                db.collection(COLLECTION_PATH)
+                        .whereEqualTo("accountId", userId).get().get()
+                        .getDocuments()
+                        .stream().map(d -> d.toObject(Booking.class))
+                        .sorted(Comparator.comparing(Booking::getStartDate))
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+        return userBookings;
     }
 
     /**
@@ -72,7 +72,7 @@ public class BookingService implements IBookingService {
                 .get()
                 .getDocuments()
                 .stream().map(d -> d.toObject(Booking.class))
-                .sorted(Comparator.comparing(Booking :: getStartDate))
+                .sorted(Comparator.comparing(Booking::getStartDate))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         return allBookings;
     }
@@ -99,17 +99,24 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public String updateBooking(String bookingId, LocalDateTime endDate, PaymentStatus newStatus) throws ExecutionException, InterruptedException {
+    public String updateBooking(String bookingId, String endDate, PaymentStatus newStatus) throws ExecutionException, InterruptedException {
         if (bookingId == null) throw new IllegalArgumentException();
         DocumentReference docRef = db.collection(COLLECTION_PATH)
                 .document(bookingId);
-        ApiFuture<WriteResult> collectionApiFuture = docRef
+        return docRef
                 .update("endDate", endDate,
-                "payment", newStatus);
+                        "payment", newStatus).get().getUpdateTime().toString();
 
-        return collectionApiFuture.get().getUpdateTime().toString();
     }
 
+    @Override
+    public String updateBookingForScooterBooking(String bookingId, String serialNr) throws ExecutionException, InterruptedException {
+        if (bookingId == null) throw new IllegalArgumentException();
+        DocumentReference docRef = db.collection(COLLECTION_PATH)
+                .document(bookingId);
+        return docRef
+                .update("serialNumber", serialNr).get().getUpdateTime().toString();
+    }
 
 
 }

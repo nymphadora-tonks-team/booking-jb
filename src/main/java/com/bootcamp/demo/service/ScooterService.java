@@ -15,4 +15,6 @@ public interface ScooterService {
     void createScooter(Scooter scooter);
     String updateScooter (final String scooterId, Location location, ScooterStatus newStatus, Double newBatteryLevel) throws ExecutionException, InterruptedException;
     void deleteScooterById(String scooterId);
+    Set<Scooter> getAvailableScooters(Location userLocation, Double searchRadius);
+
 }

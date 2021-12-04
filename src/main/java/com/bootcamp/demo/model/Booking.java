@@ -1,8 +1,8 @@
 package com.bootcamp.demo.model;
 
 
-import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 
 public final class Booking {
@@ -18,8 +18,8 @@ public final class Booking {
     public Booking() {
     }
 
-    public Booking(String id, String serialNumber, long accountId, String startDate, String endDate, PaymentStatus payment) {
-        this.id = id;
+    public Booking( String serialNumber, long accountId, String startDate, String endDate, PaymentStatus payment) {
+        this.id =  UUID.randomUUID().toString().replace("-", "");
         this.serialNumber = serialNumber;
         this.accountId = accountId;
         this.startDate = startDate;
@@ -85,5 +85,16 @@ public final class Booking {
     @Override
     public int hashCode() {
         return Objects.hash(id, serialNumber, accountId);
+    }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Booking{");
+        sb.append("id='").append(id).append(", ");
+        sb.append("serialNumber='").append(serialNumber).append(", ");
+        sb.append("accountId='").append(accountId).append(", ");
+        sb.append("startDate=").append(startDate).append(", ");
+        sb.append("endDate=").append(endDate).append(", ");
+        sb.append("payment=").append(payment).append('}');
+        return sb.toString();
     }
 }
