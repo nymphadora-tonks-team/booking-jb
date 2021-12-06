@@ -1,5 +1,7 @@
 package com.bootcamp.demo.model;
 
+import com.bootcamp.demo.model.component.PaymentStatus;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -28,44 +30,44 @@ public final class Booking {
         return id;
     }
 
-    public String getSerialNumber() {
-        return serialNumber;
-    }
-
-    public long getAccountId() {
-        return accountId;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public PaymentStatus getPayment() {
-        return payment;
-    }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
     }
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
+    public long getAccountId() {
+        return accountId;
+    }
+
     public void setAccountId(long accountId) {
         this.accountId = accountId;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
     public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public PaymentStatus getPayment() {
+        return payment;
     }
 
     public void setPayment(PaymentStatus payment) {

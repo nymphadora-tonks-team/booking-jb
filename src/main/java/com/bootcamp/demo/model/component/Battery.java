@@ -1,5 +1,7 @@
 package com.bootcamp.demo.model.component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Objects;
 
 public final class Battery {
@@ -23,6 +25,7 @@ public final class Battery {
         this.setStatus();
     }
 
+    @JsonIgnore
     public BatteryStatus getStatus() {
         return status;
     }
