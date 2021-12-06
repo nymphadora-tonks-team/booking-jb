@@ -54,26 +54,27 @@ public class ScooterController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
     @PutMapping("/updateScooter")
-    public ResponseEntity<Object> updateScooter (final String scooterId, final Location location, final ScooterStatus newStatus, final Double newBatteryLevel)
-    {
+    public ResponseEntity<Object> updateScooter(final String scooterId, final Location location, final ScooterStatus newStatus, final Double newBatteryLevel) {
         try {
             scooterService.updateScooter(scooterId, location, newStatus, newBatteryLevel);
             LOGGER.info("UPDATE SCOOTER - API endpoint invoked");
             return new ResponseEntity<>(HttpStatus.OK);
-        }
-        catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
+        } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
+
     @DeleteMapping("/{scooterId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteScooterById(@PathVariable(value = "scooterId") String scooterId){
+    public void deleteScooterById(@PathVariable(value = "scooterId") String scooterId) {
         LOGGER.info("DELETE SCOOTER BY ID - API endpoint invoked. scooterId = {}", scooterId);
         scooterService.deleteScooterById(scooterId);
     }
+
     @PostMapping("/available/{searchRadius}")
     @ResponseStatus(value = HttpStatus.OK)
     public Set<Scooter> getAvailableScooters(@PathVariable(value = "searchRadius") Double searchRadius, @RequestBody final Location selectedLocation) {

@@ -3,11 +3,13 @@ package com.bootcamp.demo.service;
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
-import com.bootcamp.demo.service.assembler.ScooterAssembler;
 import com.bootcamp.demo.service.exception.ItemNotFoundException;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteResult;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +18,9 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
-public class ScooterService  {
+public class ScooterService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScooterService.class);
     private static final String COLLECTION_SCOOTERS_PATH = "bookings/databases/scooters";
@@ -106,14 +107,16 @@ public class ScooterService  {
             throw new ServiceException(e);
         }
     }
+
     /**
      * This method has the role of comparing latitude / longitude according to the given radius
-     * @param selectedCoord is selected location latitude or selected location longitude
-     * @param scooterCoord is scooter location latitude or scooter location longitude
+     *
+     * @param selectedCoord   is selected location latitude or selected location longitude
+     * @param scooterCoord    is scooter location latitude or scooter location longitude
      * @param convertedRadius searchRadius converted from m to lat / lon
      * @return true if scooter is in selected search radius, false if not
      */
-    private boolean isWithinRadius(Double selectedCoord, Double scooterCoord, Double convertedRadius){
+    private boolean isWithinRadius(Double selectedCoord, Double scooterCoord, Double convertedRadius) {
         return (scooterCoord <= selectedCoord + convertedRadius)
                 && (scooterCoord > selectedCoord - convertedRadius);
     }
@@ -122,9 +125,10 @@ public class ScooterService  {
      * This method is intended to determine if a scooter is nearby by comparing the location
      * of the scooter with the location and search radius selected by the user.
      * Considering that 1 m = 0.00000636 lat/lon, we will convert searchRadius from m to lat / lon
+     *
      * @param selectedLocation location selected by user
-     * @param scooterLocation the location of the scooter
-     * @param searchRadius search radius selected by user
+     * @param scooterLocation  the location of the scooter
+     * @param searchRadius     search radius selected by user
      * @return true if scooter is nearby, false if not
      */
     private boolean isNearby(Location selectedLocation, Location scooterLocation, Double searchRadius) {
@@ -135,8 +139,9 @@ public class ScooterService  {
 
     /**
      * This method has the role of finding available scooters that are nearby
+     *
      * @param selectedLocation location selected by user
-     * @param searchRadius search radius selected by user
+     * @param searchRadius     search radius selected by user
      * @return list with available scooters
      */
 
