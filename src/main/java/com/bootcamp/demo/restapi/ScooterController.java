@@ -1,6 +1,7 @@
 package com.bootcamp.demo.restapi;
 
 import com.bootcamp.demo.model.Scooter;
+import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.service.ScooterService;
 import com.bootcamp.demo.service.exception.ServiceException;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,6 @@ import java.util.Set;
 @RestController
 @RequestMapping(path = "/api/scooters")
 public class ScooterController {
-
     private final ScooterService scooterService;
 
     public ScooterController(ScooterService scooterService) {
@@ -47,5 +47,11 @@ public class ScooterController {
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/available/{searchRadius}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Set<Scooter> getAvailableScooters(@PathVariable(value = "searchRadius") Double searchRadius, @RequestBody final Location selectedLocation) {
+       return scooterService.getAvailableScooters(selectedLocation, searchRadius);
     }
 }
