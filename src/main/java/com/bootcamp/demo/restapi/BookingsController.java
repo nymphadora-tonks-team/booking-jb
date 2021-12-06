@@ -3,7 +3,6 @@ package com.bootcamp.demo.restapi;
 import com.bootcamp.demo.model.Booking;
 import com.bootcamp.demo.model.PaymentStatus;
 import com.bootcamp.demo.model.Scooter;
-import com.bootcamp.demo.model.User;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.service.BookingService;

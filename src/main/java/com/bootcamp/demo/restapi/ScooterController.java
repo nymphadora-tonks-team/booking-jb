@@ -28,24 +28,18 @@ public class ScooterController {
     @GetMapping
     @ResponseBody
     public ResponseEntity<Set<Scooter>> getScooters() {
-        LOGGER.info("GET SCOOTERS - API endpoint invoked");
-        Set<Scooter> scooters = null;
         try {
-            scooters = scooterService.findAllScooters();
-            return new ResponseEntity<>(scooters, HttpStatus.OK);
+            return new ResponseEntity<>(scooterService.findAllScooters(), HttpStatus.OK);
         } catch (ServiceException e) {
-            return new ResponseEntity<>(scooters, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/{scooterId}")
     @ResponseBody
     public ResponseEntity<Object> getScooterById(@PathVariable(value = "scooterId") String scooterId) {
-        LOGGER.info("GET SCOOTER BY ID - API endpoint invoked");
-
         try {
-            Scooter scooter = scooterService.findScooterById(scooterId);
-            return new ResponseEntity<>(scooter, HttpStatus.OK);
+            return new ResponseEntity<>(scooterService.findScooterById(scooterId), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -53,9 +47,7 @@ public class ScooterController {
 
     @PostMapping
     public ResponseEntity<Object> postScooter(@RequestBody final Scooter scooter) {
-        LOGGER.info("POST SCOOTER - API endpoint invoked");
         try {
-            scooter.getBattery().setStatus();
             scooterService.createScooter(scooter);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (ServiceException e) {
