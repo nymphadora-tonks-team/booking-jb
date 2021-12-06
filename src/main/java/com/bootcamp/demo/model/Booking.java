@@ -14,13 +14,13 @@ public final class Booking {
     public Booking() {
     }
 
-    public Booking(String serialNumber, long accountId, String startDate, String endDate, PaymentStatus payment) {
+    public Booking(String serialNumber, long accountId, String startDate, String endDate, PaymentStatus paymentStatus) {
         this.id = UUID.randomUUID().toString().replace("-", "");
         this.serialNumber = serialNumber;
         this.accountId = accountId;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.payment = payment;
+        this.payment = paymentStatus;
     }
 
     public String getId() {

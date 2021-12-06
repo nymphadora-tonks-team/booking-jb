@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 public class BookingsController {
     private static final ResponseEntity<Object> SUCCESS_RESPONSE = new ResponseEntity<>(HttpStatus.OK);
     private static final ResponseEntity<Object> FAILURE_RESPONSE = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookingsController.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookingsController.class);
     private final BookingService bookingService;
 
     public BookingsController(BookingService bookingService) {
@@ -28,39 +28,34 @@ public class BookingsController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<Object> createBooking(@RequestBody final Booking booking) {
         try {
-            LOGGER.info("Booking created successfully. Update time: " + bookingService.createBooking(booking));
+            bookingService.createBooking(booking);
             return SUCCESS_RESPONSE;
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Failed to create booking with id = {}.", booking.getId(), e.getMessage());
             return FAILURE_RESPONSE;
         }
     }
 
     @GetMapping("/getBookingsByUserId/{userId}")
-    public ResponseEntity<LinkedHashSet<Booking>> getBookingsByUserId(@PathVariable(value = "userId") String userId) {
+    public ResponseEntity<LinkedHashSet<Booking>> getBookingsByUserId(@PathVariable(value = "userId") long userId) {
         LinkedHashSet<Booking> bookingsByUserId = new LinkedHashSet<>();
         try {
             bookingsByUserId = bookingService.getBookings(userId);
-            LOGGER.info("GET BOOKINGS BY userID - API endpoint invoked");
             return new ResponseEntity<>(bookingsByUserId, HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Failed to find bookings by user id = {}.", userId, e.getMessage());
             return new ResponseEntity<>(bookingsByUserId, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/getBooking/{id}")
     public ResponseEntity<Object> getBooking(@PathVariable(value = "id") final String id) {
-        Booking booking = null;
+        Booking booking = new Booking();
         try {
             booking = bookingService.getBookingByID(id);
-            LOGGER.info("GET BOOKING BY ID - API endpoint invoked");
             return new ResponseEntity<>(booking, HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Failed to get bookings by id = {}.", id, e.getMessage());
             return new ResponseEntity<>(booking, HttpStatus.BAD_REQUEST);
         }
     }
@@ -72,8 +67,7 @@ public class BookingsController {
             bookings = bookingService.getAllBookings();
             return new ResponseEntity<>(bookings, HttpStatus.OK);
         } catch (ExecutionException | InterruptedException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Failed to find all bookings.", e.getMessage());
             return new ResponseEntity<>(bookings, HttpStatus.BAD_REQUEST);
         }
     }
@@ -82,12 +76,10 @@ public class BookingsController {
     public ResponseEntity<Object> deleteBooking(@RequestParam final String id) {
         try {
             bookingService.deleteBooking(id);
-            LOGGER.info("DELETE BOOKING - API endpoint invoked");
-            return new ResponseEntity<>(HttpStatus.OK);
+            return SUCCESS_RESPONSE;
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            LOGGER.error("Failed to delete booking with id = {}.", id, e.getMessage());
+            return FAILURE_RESPONSE;
         }
     }
 
@@ -95,12 +87,10 @@ public class BookingsController {
     public ResponseEntity<Object> updateBooking(@RequestParam final String id, @RequestParam("start") String endDate, PaymentStatus status) {
         try {
             bookingService.updateBooking(id, endDate, status);
-            LOGGER.info("UPDATE BOOKING - API endpoint invoked");
-            return new ResponseEntity<>(HttpStatus.OK);
+            return SUCCESS_RESPONSE;
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            LOGGER.error("Failed to update booking with id = {}.", id, e.getMessage());
+            return FAILURE_RESPONSE;
         }
     }
 }
