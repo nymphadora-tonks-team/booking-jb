@@ -33,18 +33,20 @@ public class UserService implements IUserService {
         LOGGER.info("CREATE USER - service function invoked: user = {}", user.toString());
 
         try {
-            if (this.getUserByEmail(user.getEmail()) != null) {
+            try {
+                this.getUserByEmail(user.getEmail());
                 throw new ServiceException("An account linked with this email already exists!");
+            } catch (ItemNotFoundException e) {
+                ApiFuture<WriteResult> collectionApiFuture = db.collection(COLLECTION_USERS_PATH)
+                        .document(user.getUserId())
+                        .set(user);
+
+                String updateTime = collectionApiFuture.get().getUpdateTime().toDate().toString();
+
+                LOGGER.info("CREATE USER - service function completed successfully. Update time: {}", updateTime);
+                return user;
             }
 
-            ApiFuture<WriteResult> collectionApiFuture = db.collection(COLLECTION_USERS_PATH)
-                    .document(user.getUserId())
-                    .set(user);
-
-            String updateTime = collectionApiFuture.get().getUpdateTime().toDate().toString();
-
-            LOGGER.info("CREATE USER - service function completed successfully. Update time: {}", updateTime);
-            return user;
 
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error("CREATE USER - service function. Error message: {}", e.getMessage(), e);
