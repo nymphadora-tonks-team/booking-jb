@@ -1,7 +1,10 @@
-package com.bootcamp.demo;
+package com.bootcamp.demo.repo;
 
+import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseOptions;
-import org.springframework.stereotype.Service;
+import com.google.firebase.cloud.FirestoreClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
@@ -12,8 +15,8 @@ import static com.google.firebase.FirebaseApp.initializeApp;
 import static java.lang.System.getProperty;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-@Service
-public class FirebaseInitializer {
+@Configuration
+public class FirebaseConfig {
 
     @PostConstruct
     public void init() throws IOException {
@@ -24,5 +27,10 @@ public class FirebaseInitializer {
                 .build();
 
         initializeApp(options);
+    }
+
+    @Bean
+    public Firestore getFirestore() {
+        return FirestoreClient.getFirestore();
     }
 }
