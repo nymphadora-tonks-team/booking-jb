@@ -1,8 +1,13 @@
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.User;
+import com.bootcamp.demo.service.exception.ItemNotFoundException;
+import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.*;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -12,10 +17,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-
-// #TODO : change return null to throwing a service exception
-
 
 @Service
 public class UserService implements IUserService {
@@ -32,6 +33,10 @@ public class UserService implements IUserService {
         LOGGER.info("CREATE USER - service function invoked: user = {}", user.toString());
 
         try {
+            if (this.getUserByEmail(user.getEmail()) != null) {
+                throw new ServiceException("An account linked with this email already exists!");
+            }
+
             ApiFuture<WriteResult> collectionApiFuture = db.collection(COLLECTION_USERS_PATH)
                     .document(user.getUserId())
                     .set(user);
@@ -43,7 +48,7 @@ public class UserService implements IUserService {
 
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error("CREATE USER - service function. Error message: {}", e.getMessage(), e);
-            return null;
+            throw new ServiceException(e);
         }
     }
 
@@ -65,13 +70,12 @@ public class UserService implements IUserService {
 
                 String updateTime = collectionApiFuture.get().getUpdateTime().toDate().toString();
 
-
                 LOGGER.info("DELETE USER BY ID - service function completed successfully. Update time: {}", updateTime);
             }
 
 
         } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
+            throw new ServiceException(e);
         }
     }
 
@@ -87,20 +91,20 @@ public class UserService implements IUserService {
 
             if (!user.exists()) {
                 LOGGER.warn("FIND USER BY ID - user does not exist! userId = {}", userId);
-                return null;
+                throw new ItemNotFoundException("User does not exist! userID = " + userId);
             }
 
             return user.toObject(User.class);
 
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error("GET USER BY ID - service function. Error message: {}", e.getMessage(), e);
-            return null;
+            throw new ServiceException(e);
         }
     }
 
     @Override
     public User getUserByEmail(final String email) {
-        LOGGER.info(String.format("FIND USER BY EMAIL - service function invoked. UserId = %s", email));
+        LOGGER.info(String.format("GET USER BY EMAIL - service function invoked. UserId = %s", email));
 
         try {
             List<QueryDocumentSnapshot> filtered = db.collection(COLLECTION_USERS_PATH)
@@ -109,8 +113,8 @@ public class UserService implements IUserService {
                     .getDocuments();
 
             if (filtered.isEmpty()) {
-                LOGGER.warn("FIND USER BY EMAIL - user does not exist! userId = {}", email);
-                return null;
+                LOGGER.warn("GET USER BY EMAIL - user does not exist! Email = {}", email);
+                throw new ItemNotFoundException("User does not exist! User email = " + email);
             }
 
             DocumentSnapshot user = filtered.get(0);
@@ -119,7 +123,7 @@ public class UserService implements IUserService {
 
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error("GET USER BY EMAIL - service function. Error message: {}", e.getMessage(), e);
-            return null;
+            throw new ServiceException(e);
         }
     }
 
@@ -139,7 +143,7 @@ public class UserService implements IUserService {
 
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error("GET USERS - service function. Error message: {}", e.getMessage(), e);
-            return null;
+            throw new ServiceException(e);
         }
     }
 }
