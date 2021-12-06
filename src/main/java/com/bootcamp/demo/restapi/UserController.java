@@ -3,7 +3,10 @@ package com.bootcamp.demo.restapi;
 import com.bootcamp.demo.model.User;
 import com.bootcamp.demo.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 
 @RestController
@@ -29,13 +32,19 @@ public class UserController {
         userService.deleteUserById(id);
     }
 
-    @GetMapping("/getUser/{id}")
+    @GetMapping("/getUserById/{id}")
     public User getUserById(@PathVariable(value = "id") final String id) {
         return userService.getUserById(id);
     }
 
-    @GetMapping("/getUser/{email}")
+    @GetMapping("/getUserByEmail/{email}")
     public User getUserByEmail(@PathVariable(value = "email") final String email) {
-        return userService.getUserById(email);
+        return userService.getUserByEmail(email);
+    }
+
+    @GetMapping
+    @ResponseBody
+    public ResponseEntity<Set<User>> getScooters() {
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 }
