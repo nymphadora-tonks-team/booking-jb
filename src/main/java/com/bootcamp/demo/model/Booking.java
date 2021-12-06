@@ -86,6 +86,12 @@ public final class Booking {
         return Objects.hash(id, serialNumber, accountId);
     }
 
+    public double getTotalCost(long minutesSpentOnScooter) {
+        double startCost = 0.60;
+        double pricePerMin = 1.20;
+        return startCost + (pricePerMin * minutesSpentOnScooter);
+    }
+
     @Override
     public String toString() {
         return "Booking: " + "Id = " + id + ", " +
