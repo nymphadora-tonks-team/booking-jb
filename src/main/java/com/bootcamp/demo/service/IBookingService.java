@@ -1,7 +1,7 @@
 package com.bootcamp.demo.service;
 
 import com.bootcamp.demo.model.Booking;
-import com.bootcamp.demo.model.PaymentStatus;
+import com.bootcamp.demo.model.component.PaymentStatus;
 
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 public interface IBookingService {
     Booking getBookingByID(final String id) throws ExecutionException, InterruptedException;
 
-    Set<Booking> getBookings(final long userId) throws ExecutionException, InterruptedException;
+    Set<Booking> getBookings(final String userId) throws ExecutionException, InterruptedException;
 
     Set<Booking> getAllBookings() throws ExecutionException, InterruptedException;
 

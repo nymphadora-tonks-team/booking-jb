@@ -2,25 +2,26 @@ package com.bootcamp.demo.model;
 
 import java.util.Objects;
 import java.util.UUID;
+import com.bootcamp.demo.model.component.PaymentStatus;
 
 public final class Booking {
     private String id;
     private String serialNumber;
-    private long accountId;
+    private String accountId;
     private String startDate;
     private String endDate;
-    private PaymentStatus payment;
+    private PaymentStatus paymentStatus;
 
-    public Booking() {
-    }
+    public Booking() {}
 
-    public Booking(String serialNumber, long accountId, String startDate, String endDate, PaymentStatus paymentStatus) {
-        this.id = UUID.randomUUID().toString().replace("-", "");
+    public Booking(String serialNumber, String accountId, String startDate, String endDate, PaymentStatus paymentStatus) {
+        this.id = UUID.randomUUID().toString();
+
         this.serialNumber = serialNumber;
         this.accountId = accountId;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.payment = paymentStatus;
+        this.paymentStatus = paymentStatus;
     }
 
     public String getId() {
@@ -31,7 +32,7 @@ public final class Booking {
         return serialNumber;
     }
 
-    public long getAccountId() {
+    public String getAccountId() {
         return accountId;
     }
 
@@ -43,8 +44,8 @@ public final class Booking {
         return endDate;
     }
 
-    public PaymentStatus getPayment() {
-        return payment;
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
     }
 
     public void setId(String id) {
@@ -55,7 +56,7 @@ public final class Booking {
         this.serialNumber = serialNumber;
     }
 
-    public void setAccountId(long accountId) {
+    public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
 
@@ -67,8 +68,8 @@ public final class Booking {
         this.endDate = endDate;
     }
 
-    public void setPayment(PaymentStatus payment) {
-        this.payment = payment;
+    public void setPayment(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     @Override
@@ -99,6 +100,6 @@ public final class Booking {
                 "Account id = " + accountId + ", " +
                 "Start date = " + startDate + ", " +
                 "End date = " + endDate + ", " +
-                "Payment = " + payment + ", ";
+                "Payment = " + paymentStatus + ", ";
     }
 }

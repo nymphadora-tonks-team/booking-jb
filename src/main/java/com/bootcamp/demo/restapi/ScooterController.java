@@ -17,8 +17,6 @@ import java.util.concurrent.ExecutionException;
 @RestController
 @RequestMapping(path = "/api/scooters")
 public class ScooterController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ScooterController.class);
     private final ScooterService scooterService;
 
     public ScooterController(ScooterService scooterService) {
@@ -59,20 +57,11 @@ public class ScooterController {
     public ResponseEntity<Object> updateScooter(final String scooterId, final Location location, final ScooterStatus newStatus, final Double newBatteryLevel) {
         try {
             scooterService.updateScooter(scooterId, location, newStatus, newBatteryLevel);
-            LOGGER.info("UPDATE SCOOTER - API endpoint invoked");
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-    }
-
-    @DeleteMapping("/{scooterId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteScooterById(@PathVariable(value = "scooterId") String scooterId) {
-        LOGGER.info("DELETE SCOOTER BY ID - API endpoint invoked. scooterId = {}", scooterId);
-        scooterService.deleteScooterById(scooterId);
     }
 
     @PostMapping("/available/{searchRadius}")
