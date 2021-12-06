@@ -9,10 +9,11 @@ public final class Battery {
     public Battery() {
     }
 
-    public Battery(Double level, BatteryStatus status) {
+    public Battery(Double level) {
         this.level = level;
         this.setStatus();
     }
+
 
     public Double getLevel() {
         return level;

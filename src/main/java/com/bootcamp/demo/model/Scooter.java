@@ -1,7 +1,7 @@
 package com.bootcamp.demo.model;
 
-import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.Battery;
+import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
 
 import java.util.Objects;
@@ -11,6 +11,23 @@ public final class Scooter {
     private Location currentLocation;
     private Battery battery;
     private ScooterStatus status;
+
+    private Scooter() {
+    }
+
+    public Scooter(String serialNumber, Location currentLocation, Double level, ScooterStatus status) {
+        this.serialNumber = serialNumber;
+        this.currentLocation = currentLocation;
+        this.battery = new Battery(level);
+        this.status = status;
+    }
+
+    public Scooter(String serialNumber, Location currentLocation, Battery battery, ScooterStatus status) {
+        this.serialNumber = serialNumber;
+        this.currentLocation = currentLocation;
+        this.battery = battery;
+        this.status = status;
+    }
 
     public String getSerialNumber() {
         return serialNumber;
