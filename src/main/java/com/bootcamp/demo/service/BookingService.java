@@ -1,11 +1,11 @@
 package com.bootcamp.demo.service;
 
+import com.bootcamp.demo.model.BookScooter;
 import com.bootcamp.demo.model.Booking;
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.PaymentStatus;
 import com.bootcamp.demo.model.component.ScooterStatus;
-import com.bootcamp.demo.restapi.BookingsController;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -29,6 +26,7 @@ public class BookingService implements IBookingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookingService.class);
     private final Firestore db;
     private final ScooterService scooterService;
+    private static final Random RANDOM = new Random();
 
     public BookingService(Firestore db, ScooterService scooterService) {
         this.db = db;
@@ -120,30 +118,36 @@ public class BookingService implements IBookingService {
                 .toString();
     }
 
-    public Scooter bookAScooter(final Double lat, final Double longitude) throws ExecutionException, InterruptedException {
-        Random random = new Random();
-        Location userLocation = new Location(lat, longitude);
-        Set<Scooter> allAvailableScooters = scooterService.getAvailableScooters(userLocation, 10.0);
-        if (allAvailableScooters.size() > 0) {
-            int randomIndexScooter = random.nextInt(allAvailableScooters.size());
-            Scooter[] listOfScooters = allAvailableScooters.toArray(new Scooter[allAvailableScooters.size()]);
-            Scooter pickedScooter = listOfScooters[randomIndexScooter];
-            pickedScooter.setStatus(ScooterStatus.RESERVED);
-            scooterService.updateScooter(pickedScooter.getSerialNumber(), pickedScooter.getCurrentLocation(), pickedScooter.getStatus(), pickedScooter.getBattery().getLevel());
-            LOGGER.info("scooter:" + pickedScooter.toString());
-            LinkedHashSet<Booking> bookings = getAllBookings();
-            int randomIndexBooking = random.nextInt(bookings.size());
-            Booking[] listOfBookings = bookings.toArray(new Booking[bookings.size()]);
-            Booking pickedBooking = listOfBookings[randomIndexBooking];
-            pickedBooking.setSerialNumber(pickedScooter.getSerialNumber());
-            String startDateBooking = pickedBooking.getStartDate();
-            pickedBooking.setStartDate(startDateBooking);
-            LOGGER.info("booking:" + pickedBooking.toString());
-            createBooking(pickedBooking);
+    public Scooter bookAScooter(BookScooter bookScooter) throws ExecutionException, InterruptedException {
+        List<Scooter> allAvailableScooters = scooterService.getAvailableScooters(
+                new Location(bookScooter.getLatitude(), bookScooter.getLongitude()), bookScooter.getSearchRadius());
+        return  ! allAvailableScooters.isEmpty()
+                ? bookRandomScooter(allAvailableScooters, bookScooter)
+                : null;
+    }
 
-            return pickedScooter;
-        }
-        return null;
+    private Scooter bookRandomScooter(List<Scooter> allAvailableScooters, BookScooter bookScooter) throws ExecutionException, InterruptedException {
+        final Scooter pickedScooter = reserveScooter(allAvailableScooters);
+        createBookingScooter(pickedScooter, bookScooter);
+        return pickedScooter;
+    }
+
+    private void createBookingScooter(Scooter scooter, BookScooter bookScooter) throws ExecutionException, InterruptedException {
+        Booking booking = new Booking();
+        booking.setId(bookScooter.getId());
+        booking.setAccountId(bookScooter.getAccountId());
+        booking.setSerialNumber(scooter.getSerialNumber());
+        booking.setStartDate(LocalDateTime.now().toString());
+        booking.setEndDate(null);
+        booking.setPayment(null);
+        createBooking(booking);
+    }
+
+    private Scooter reserveScooter(final List<Scooter> allAvailableScooters) throws ExecutionException, InterruptedException {
+        final Scooter pickedScooter = allAvailableScooters.get(RANDOM.nextInt(allAvailableScooters.size()));
+        pickedScooter.setStatus(ScooterStatus.RESERVED);
+        scooterService.updateScooter(pickedScooter.getSerialNumber(), pickedScooter.getCurrentLocation(), pickedScooter.getStatus(), pickedScooter.getBattery().getLevel());
+        return pickedScooter;
     }
 
     public Double endBookingAndUpdate(Booking booking, String endDate) throws ExecutionException, InterruptedException {

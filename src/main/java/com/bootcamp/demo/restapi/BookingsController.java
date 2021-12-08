@@ -1,5 +1,6 @@
 package com.bootcamp.demo.restapi;
 
+import com.bootcamp.demo.model.BookScooter;
 import com.bootcamp.demo.model.Booking;
 import com.bootcamp.demo.model.component.PaymentStatus;
 import com.bootcamp.demo.model.Scooter;
@@ -38,44 +39,41 @@ public class BookingsController {
 
     @GetMapping("/getBookingsByUserId/{userId}")
     public ResponseEntity<LinkedHashSet<Booking>> getBookingsByUserId(@PathVariable(value = "userId") String userId) {
-        LinkedHashSet<Booking> bookingsByUserId = new LinkedHashSet<>();
         try {
-            bookingsByUserId = bookingService.getBookings(userId);
-            return new ResponseEntity<>(bookingsByUserId, HttpStatus.OK);
+            return new ResponseEntity<>(bookingService.getBookings(userId), HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             LOGGER.error("Failed to find bookings by user id = " + userId, e.getMessage());
-            return new ResponseEntity<>(bookingsByUserId, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/getBooking/{id}")
-    public ResponseEntity<Object> getBooking(@PathVariable(value = "id") final String id) {
-        Booking booking = new Booking();
+    public ResponseEntity<Booking> getBooking(@PathVariable(value = "id") final String id) {
         try {
-            booking = bookingService.getBookingByID(id);
-            return new ResponseEntity<>(booking, HttpStatus.OK);
+            return new ResponseEntity<>(bookingService.getBookingByID(id), HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             LOGGER.error("Failed to get bookings by id = " + id, e.getMessage());
-            return new ResponseEntity<>(booking, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/showAllBookings")
     public ResponseEntity<LinkedHashSet<Booking>> getAllBookings() {
-        LinkedHashSet<Booking> bookings = new LinkedHashSet<>();
         try {
-            bookings = bookingService.getAllBookings();
-            return new ResponseEntity<>(bookings, HttpStatus.OK);
+            return new ResponseEntity<>(bookingService.getAllBookings(), HttpStatus.OK);
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error("Failed to find all bookings. {}", e.getMessage());
-            return new ResponseEntity<>(bookings, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/bookScooter")
-    @ResponseBody
-    public ResponseEntity<Scooter> bookScooter(final Double lat, final Double longitude) throws ExecutionException, InterruptedException {
-       return new ResponseEntity<>(bookingService.bookAScooter(lat, longitude), HttpStatus.OK);
+    public ResponseEntity<Scooter> bookScooter(@RequestBody final BookScooter bookScooter) throws ExecutionException, InterruptedException {
+        try {
+            return new ResponseEntity<>(bookingService.bookAScooter(bookScooter), HttpStatus.OK);
+        } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/delete")
@@ -102,7 +100,7 @@ public class BookingsController {
             return new ResponseEntity<>(totalCostComputed, HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             LOGGER.error("Unfortunately,an error happened when trying to update the booking. {}", e.getMessage());
-            return new ResponseEntity<>(totalCostComputed, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }

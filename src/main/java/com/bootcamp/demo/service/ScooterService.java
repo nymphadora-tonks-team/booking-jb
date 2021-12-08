@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -113,11 +114,11 @@ public class ScooterService {
      * @param searchRadius search radius selected by user
      * @return list with available scooters
      */
-    public Set<Scooter> getAvailableScooters(Location selectedLocation, Double searchRadius) {
-        Set<Scooter> availableScooters = findAllScooters().stream()
+    public List<Scooter> getAvailableScooters(Location selectedLocation, Double searchRadius) {
+        List<Scooter> availableScooters = findAllScooters().stream()
                 .filter(scooter -> (scooter.getStatus() == ScooterStatus.AVAILABLE) &&
                         isNearby(selectedLocation, scooter.getCurrentLocation(), searchRadius))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         LOGGER.info("Found scooters successfully");
         return availableScooters;
