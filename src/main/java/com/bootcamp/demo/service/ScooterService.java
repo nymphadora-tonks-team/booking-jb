@@ -72,13 +72,12 @@ public class ScooterService {
     }
 
     public String updateScooter(final String scooterId, Location location, ScooterStatus newStatus, Double newBatteryLevel) throws ExecutionException, InterruptedException {
-        LOGGER.info("UPDATE SCOOTER - service function invoked:");
-        DocumentReference docRef = db.collection(COLLECTION_SCOOTERS_PATH)
-                .document(scooterId);
-        Scooter newScooter = new Scooter(scooterId, location, newBatteryLevel, newStatus);
-        ApiFuture<WriteResult> collectionApiFuture = docRef
-                .set(newScooter);
-        return collectionApiFuture.get().getUpdateTime().toString();
+        return db.collection(COLLECTION_SCOOTERS_PATH)
+                .document(scooterId)
+                .set(new Scooter(scooterId, location, newBatteryLevel, newStatus))
+                .get()
+                .getUpdateTime()
+                .toString();
     }
 
     /**

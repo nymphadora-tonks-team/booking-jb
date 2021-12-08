@@ -19,21 +19,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
-public class BookingService implements IBookingService {
+public class BookingService {
     private static final String COLLECTION_PATH = "bookings/databases/bookings";
     private final Firestore db;
     private final ScooterService scooterService;
+    private final PaymentService paymentService;
     private static final Random RANDOM = new Random();
 
-    public BookingService(Firestore db, ScooterService scooterService) {
+    public BookingService(Firestore db, ScooterService scooterService, PaymentService paymentService) {
         this.db = db;
         this.scooterService = scooterService;
+        this.paymentService = paymentService;
     }
 
     /**
      * Retrieves a Booking entity by its id.
      */
-    @Override
     public Booking getBookingByID(final String bookingId) throws ExecutionException, InterruptedException, IllegalArgumentException {
         if (bookingId == null) {
             throw new IllegalArgumentException("Parameter 'bookingId' cannot be null");
@@ -53,7 +54,6 @@ public class BookingService implements IBookingService {
     /**
      * Retrieves a Booking entity by its user's id.
      */
-    @Override
     public LinkedHashSet<Booking> getBookings(final String userId) throws ExecutionException, InterruptedException, IllegalArgumentException {
 
         return db.collection(COLLECTION_PATH)
@@ -68,7 +68,6 @@ public class BookingService implements IBookingService {
     /**
      * Retrieves all entities of type Booking.
      */
-    @Override
     public LinkedHashSet<Booking> getAllBookings() throws ExecutionException, InterruptedException {
         return db.collection(COLLECTION_PATH)
                 .get()
@@ -83,7 +82,6 @@ public class BookingService implements IBookingService {
     /**
      * Creates a new document containing the given Booking type param.
      */
-    @Override
     public String createBooking(final Booking booking) throws ExecutionException, InterruptedException, IllegalArgumentException {
         if (booking == null){
             throw new IllegalArgumentException("Parameter 'booking' cannot be null");
@@ -96,7 +94,6 @@ public class BookingService implements IBookingService {
                 .toString();
     }
 
-    @Override
     public String deleteBooking(final String bookingId) throws ExecutionException, InterruptedException {
         if (bookingId == null){
             throw new IllegalArgumentException("Parameter 'bookingId' cannot be null");
@@ -109,14 +106,13 @@ public class BookingService implements IBookingService {
                 .toString();
     }
 
-    @Override
-    public String updateBooking(String bookingId, String endDate, PaymentStatus newStatus) throws ExecutionException, InterruptedException {
+    public String updateBooking(String bookingId, String endDate, PaymentStatus newStatus, Double cost) throws ExecutionException, InterruptedException {
         if (bookingId == null){
             throw new IllegalArgumentException("Parameter 'bookingId' cannot be null");
         }
         return db.collection(COLLECTION_PATH)
                 .document(bookingId)
-                .update("endDate", endDate, "paymentStatus", newStatus)
+                .update("endDate", endDate, "paymentStatus", newStatus, "cost", cost)
                 .get()
                 .getUpdateTime()
                 .toString();
@@ -135,7 +131,7 @@ public class BookingService implements IBookingService {
     }
 
     private Booking createBookingScooter(Scooter scooter, BookingScooter bookScooter) throws ExecutionException, InterruptedException {
-        Booking booking = new Booking(scooter.getSerialNumber(), bookScooter.getAccountId(), LocalDateTime.now().toString(), null, null);
+        Booking booking = new Booking(scooter.getSerialNumber(), bookScooter.getAccountId(), LocalDateTime.now().toString(), null, 0.0, null);
         createBooking(booking);
         return booking;
     }
@@ -147,21 +143,26 @@ public class BookingService implements IBookingService {
         return pickedScooter;
     }
 
-    public Double endBookingAndUpdate(Booking booking, String endDate) throws ExecutionException, InterruptedException {
+    public Double computeTotalCost(Booking booking, String endDate){
         long bookingDuration = 0;
-        Scooter scooter = scooterService.findScooterById(booking.getSerialNumber());
         String startDate = booking.getStartDate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTimeStart = LocalDateTime.parse(startDate, formatter);
-        LocalDateTime dateTimeEnd = LocalDateTime.parse(endDate, formatter);
+        LocalDateTime dateTimeStart = LocalDateTime.parse(startDate);
+        LocalDateTime dateTimeEnd = LocalDateTime.parse(endDate);
         if (dateTimeEnd.isAfter(dateTimeStart)) {
             bookingDuration = dateTimeEnd.getMinute() - dateTimeStart.getMinute();
         }
-        final double totalCostComputed = booking.getTotalCost(bookingDuration);
-        updateBooking(booking.getId(), endDate, booking.getPaymentStatus());
-        scooter.setCurrentLocation(new Location(scooter.getCurrentLocation().getLongitude(), scooter.getCurrentLocation().getLongitude()));
-        scooterService.updateScooter(scooter.getSerialNumber(), scooter.getCurrentLocation(), ScooterStatus.AVAILABLE, scooter.getBattery().getLevel());
+        return booking.getTotalCost(bookingDuration);
+    }
 
-        return totalCostComputed;
+    public Boolean endBookingAndUpdate(Booking booking, String endDate, Location newLocation) throws ExecutionException, InterruptedException {
+        Scooter scooter = scooterService.findScooterById(booking.getSerialNumber());
+        Double totalCostComputed = computeTotalCost(booking, endDate);
+        PaymentStatus paymentStatus = paymentService.getPaymentStatus();
+        if (paymentStatus == PaymentStatus.SUCCESS) {
+            updateBooking(booking.getId(), endDate, paymentStatus, totalCostComputed);
+            scooterService.updateScooter(scooter.getSerialNumber(), newLocation, ScooterStatus.AVAILABLE, scooter.getBattery().getLevel());
+            return true;
+        }
+        return false;
     }
 }

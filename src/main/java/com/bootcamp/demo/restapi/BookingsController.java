@@ -2,6 +2,7 @@ package com.bootcamp.demo.restapi;
 
 import com.bootcamp.demo.model.BookingScooter;
 import com.bootcamp.demo.model.Booking;
+import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.PaymentStatus;
 import com.bootcamp.demo.model.Scooter;
 import com.bootcamp.demo.service.BookingService;
@@ -23,18 +24,6 @@ public class BookingsController {
 
     public BookingsController(BookingService bookingService) {
         this.bookingService = bookingService;
-    }
-
-    @PostMapping
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<Object> createBooking(@RequestBody final Booking booking) {
-        try {
-            bookingService.createBooking(booking);
-            return SUCCESS_RESPONSE;
-        } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            LOGGER.error("Failed to create booking with id = " + booking.getId(), e.getMessage());
-            return FAILURE_RESPONSE;
-        }
     }
 
     @GetMapping("/getBookingsByUserId/{userId}")
@@ -87,17 +76,19 @@ public class BookingsController {
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Double> updateBooking(@RequestParam final String id, @RequestParam("end")
-            String endDate, PaymentStatus status) {
-        Double totalCostComputed = 0.0;
+    @PutMapping("/endOfBooking")
+    public ResponseEntity<String> updateBooking(@RequestBody Location newLocation, @RequestParam final String id,
+                                                @RequestParam String endDate){
         try {
             Booking booking = bookingService.getBookingByID(id);
-
-            if (status == PaymentStatus.SUCCESS) {
-                totalCostComputed = bookingService.endBookingAndUpdate(booking, endDate);
+            if(booking != null) {
+                if (bookingService.endBookingAndUpdate(booking, endDate, newLocation)) {
+                    return new ResponseEntity<>("Payment success", HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("Payment failed", HttpStatus.BAD_REQUEST);
+                }
             }
-            return new ResponseEntity<>(totalCostComputed, HttpStatus.OK);
+            return new ResponseEntity<>("The booking doesn't exist", HttpStatus.BAD_REQUEST);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             LOGGER.error("Unfortunately,an error happened when trying to update the booking. {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

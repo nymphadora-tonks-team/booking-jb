@@ -10,17 +10,20 @@ public final class Booking {
     private String accountId;
     private String startDate;
     private String endDate;
+    private Double cost;
     private PaymentStatus paymentStatus;
 
     public Booking() {}
 
-    public Booking(String serialNumber, String accountId, String startDate, String endDate, PaymentStatus paymentStatus) {
+    public Booking(String serialNumber, String accountId, String startDate,
+                   String endDate, Double cost, PaymentStatus paymentStatus) {
         this.id = UUID.randomUUID().toString();
 
         this.serialNumber = serialNumber;
         this.accountId = accountId;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.cost = cost;
         this.paymentStatus = paymentStatus;
     }
 
@@ -46,6 +49,14 @@ public final class Booking {
 
     public PaymentStatus getPaymentStatus() {
         return paymentStatus;
+    }
+
+    public Double getCost() { return cost; }
+
+    public void setCost(Double cost) { this.cost = cost; }
+
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
 
     public void setId(String id) {
