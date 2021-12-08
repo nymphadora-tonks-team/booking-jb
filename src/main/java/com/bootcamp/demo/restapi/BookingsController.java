@@ -1,6 +1,6 @@
 package com.bootcamp.demo.restapi;
 
-import com.bootcamp.demo.model.BookScooter;
+import com.bootcamp.demo.model.BookingScooter;
 import com.bootcamp.demo.model.Booking;
 import com.bootcamp.demo.model.component.PaymentStatus;
 import com.bootcamp.demo.model.Scooter;
@@ -68,9 +68,9 @@ public class BookingsController {
     }
 
     @PostMapping("/bookScooter")
-    public ResponseEntity<Scooter> bookScooter(@RequestBody final BookScooter bookScooter) throws ExecutionException, InterruptedException {
+    public ResponseEntity<Booking> bookScooter(@RequestBody final BookingScooter bookingScooter) throws ExecutionException, InterruptedException {
         try {
-            return new ResponseEntity<>(bookingService.bookAScooter(bookScooter), HttpStatus.OK);
+            return new ResponseEntity<>(bookingService.bookAScooter(bookingScooter), HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

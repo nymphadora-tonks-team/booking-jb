@@ -58,7 +58,6 @@ public class ScooterController {
             scooterService.updateScooter(scooterId, location, newStatus, newBatteryLevel);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ExecutionException | InterruptedException | IllegalArgumentException e) {
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
