@@ -10,16 +10,17 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
+@Primary
 @Service
-public class UserService implements IUserService {
+public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     private static final String COLLECTION_USERS_PATH = "bookings/databases/users";
     private final Firestore db;
@@ -28,25 +29,22 @@ public class UserService implements IUserService {
         this.db = db;
     }
 
-    @Override
-    public User createUser(final User user) {
-        LOGGER.info("CREATE USER - service function invoked: user = {}", user.toString());
+    public void createUser(final User user) {
+        LOGGER.info("CREATE USER - service function invoked: user with accountId = {}", user.getUserId());
 
         try {
-            try {
-                this.getUserByEmail(user.getEmail());
+            User other = getUserByEmail(user.getEmail());
+            if (other != null)
                 throw new ServiceException("An account linked with this email already exists!");
-            } catch (ItemNotFoundException e) {
-                ApiFuture<WriteResult> collectionApiFuture = db.collection(COLLECTION_USERS_PATH)
-                        .document(user.getUserId())
-                        .set(user);
 
-                String updateTime = collectionApiFuture.get().getUpdateTime().toDate().toString();
+            ApiFuture<WriteResult> collectionApiFuture = db.collection(COLLECTION_USERS_PATH)
+                    .document(user.getUserId())
+                    .set(user);
 
-                LOGGER.info("CREATE USER - service function completed successfully. Update time: {}", updateTime);
-                return user;
-            }
+            String updateTime = collectionApiFuture.get().getUpdateTime().toDate().toString();
 
+            LOGGER.info("CREATE USER - service function completed successfully. User with id = {} Update time: {}", user.getUserId()
+                    ,updateTime);
 
         } catch (ExecutionException | InterruptedException e) {
             LOGGER.error("CREATE USER - service function. Error message: {}", e.getMessage(), e);
@@ -54,9 +52,8 @@ public class UserService implements IUserService {
         }
     }
 
-    @Override
     public void deleteUserById(String userId) {
-        LOGGER.info("DELETE USER BY ID - service function invoked: user = {}", userId);
+        LOGGER.info("DELETE USER BY ID - service function invoked: userId= {}", userId);
 
         try {
             DocumentSnapshot user = db.collection(COLLECTION_USERS_PATH)
@@ -81,9 +78,8 @@ public class UserService implements IUserService {
         }
     }
 
-    @Override
     public User getUserById(final String userId) {
-        LOGGER.info(String.format("FIND USER BY ID - service function invoked. UserId = %s", userId));
+        LOGGER.info("FIND USER BY ID - service function invoked. UserId = {}", userId);
 
         try {
             DocumentSnapshot user = db.collection(COLLECTION_USERS_PATH)
@@ -104,9 +100,8 @@ public class UserService implements IUserService {
         }
     }
 
-    @Override
     public User getUserByEmail(final String email) {
-        LOGGER.info(String.format("GET USER BY EMAIL - service function invoked. UserId = %s", email));
+        LOGGER.info("GET USER BY EMAIL - service function invoked. User with Email = {}", email);
 
         try {
             List<QueryDocumentSnapshot> filtered = db.collection(COLLECTION_USERS_PATH)
@@ -116,7 +111,7 @@ public class UserService implements IUserService {
 
             if (filtered.isEmpty()) {
                 LOGGER.warn("GET USER BY EMAIL - user does not exist! Email = {}", email);
-                throw new ItemNotFoundException("User does not exist! User email = " + email);
+                return null;
             }
 
             DocumentSnapshot user = filtered.get(0);
@@ -129,17 +124,14 @@ public class UserService implements IUserService {
         }
     }
 
-    @Override
     public Set<User> getUsers() {
         LOGGER.info("GET USERS - service function invoked");
 
         try {
-            List<QueryDocumentSnapshot> users = db.collection(COLLECTION_USERS_PATH)
+            return db.collection(COLLECTION_USERS_PATH)
                     .get()
                     .get()
-                    .getDocuments();
-
-            return StreamSupport.stream(users.spliterator(), false)
+                    .getDocuments().stream()
                     .map(qds -> qds.toObject(User.class))
                     .collect(Collectors.toSet());
 

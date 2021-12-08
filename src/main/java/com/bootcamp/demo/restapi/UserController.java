@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 
 @RestController
@@ -42,33 +43,31 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getUserById/{id}")
-    @ResponseBody
-    public ResponseEntity<Object> getUserById(@PathVariable(value = "id") final String id) {
+    private ResponseEntity<Object> getUserByGeneric(final Supplier<User> userSupplier) {
         try {
-            return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+            return new ResponseEntity<>(userSupplier.get(), HttpStatus.OK);
         } catch (ItemNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (ServiceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/getUserById/{id}")
+    @ResponseBody
+    public ResponseEntity<Object> getUserById(@PathVariable(value = "id") final String id) {
+        return getUserByGeneric(() -> userService.getUserById(id));
     }
 
     @GetMapping("/getUserByEmail/{email}")
     @ResponseBody
     public ResponseEntity<Object> getUserByEmail(@PathVariable(value = "email") final String email) {
-        try {
-            return new ResponseEntity<>(userService.getUserByEmail(email), HttpStatus.OK);
-        } catch (ItemNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return getUserByGeneric(() -> userService.getUserByEmail(email));
     }
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<Set<User>> getScooters() {
+    public ResponseEntity<Set<User>> getUsers() {
         try {
             return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
         } catch (ServiceException e) {
