@@ -5,12 +5,14 @@ import com.bootcamp.demo.model.component.Location;
 import com.bootcamp.demo.model.component.ScooterStatus;
 import com.bootcamp.demo.service.exception.ServiceException;
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -69,6 +71,15 @@ public class ScooterService {
         }
     }
 
+    public String updateScooter(final String scooterId, Location location, ScooterStatus newStatus, Double newBatteryLevel) throws ExecutionException, InterruptedException {
+        return db.collection(COLLECTION_SCOOTERS_PATH)
+                .document(scooterId)
+                .set(new Scooter(scooterId, location, newBatteryLevel, newStatus))
+                .get()
+                .getUpdateTime()
+                .toString();
+    }
+
     /**
      * This method has the role of comparing latitude / longitude according to the given radius
      * @param selectedCoord is selected location latitude or selected location longitude
@@ -102,11 +113,11 @@ public class ScooterService {
      * @param searchRadius search radius selected by user
      * @return list with available scooters
      */
-    public Set<Scooter> getAvailableScooters(Location selectedLocation, Double searchRadius) {
-        Set<Scooter> availableScooters = findAllScooters().stream()
+    public List<Scooter> getAvailableScooters(Location selectedLocation, Double searchRadius) {
+        List<Scooter> availableScooters = findAllScooters().stream()
                 .filter(scooter -> (scooter.getStatus() == ScooterStatus.AVAILABLE) &&
                         isNearby(selectedLocation, scooter.getCurrentLocation(), searchRadius))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         LOGGER.info("Found scooters successfully");
         return availableScooters;
