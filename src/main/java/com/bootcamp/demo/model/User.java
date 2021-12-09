@@ -9,7 +9,8 @@ public final class User {
     private String firstName;
     private String lastName;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String email, String firstName, String lastName) {
         this.userId = UUID.randomUUID().toString();
